@@ -2,7 +2,7 @@
 source for the project. Do not download releases from random websites, even if
 their name contains `scrcpy`.**
 
-# scrcpy (v2.3.1)
+# scrcpy (v2.6.1)
 
 <img src="app/data/icon.svg" width="128" height="128" alt="scrcpy" align="right" />
 
@@ -36,9 +36,12 @@ Its features include:
  - [configurable quality](doc/video.md)
  - [camera mirroring](doc/camera.md) (Android 12+)
  - [mirroring as a webcam (V4L2)](doc/v4l2.md) (Linux-only)
- - [physical keyboard/mouse simulation (HID)](doc/hid-otg.md)
- - [OTG mode](doc/hid-otg.md#otg)
+ - physical [keyboard][hid-keyboard] and [mouse][hid-mouse] simulation (HID)
+ - [OTG mode](doc/otg.md)
  - and more…
+
+[hid-keyboard]: doc/keyboard.md#physical-keyboard-simulation
+[hid-mouse]: doc/mouse.md#physical-mouse-simulation
 
 ## Prerequisites
 
@@ -50,15 +53,20 @@ Make sure you [enabled USB debugging][enable-adb] on your device(s).
 
 [enable-adb]: https://developer.android.com/studio/debug/dev-options#enable
 
-On some devices, you also need to enable [an additional option][control] `USB
-debugging (Security Settings)` (this is an item different from `USB debugging`)
-to control it using a keyboard and mouse. Rebooting the device is necessary once
-this option is set.
+On some devices (especially Xiaomi), you might get the following error:
+
+```
+java.lang.SecurityException: Injecting input events requires the caller (or the source of the instrumentation, if any) to have the INJECT_EVENTS permission.
+```
+
+In that case, you need to enable [an additional option][control] `USB debugging
+(Security Settings)` (this is an item different from `USB debugging`) to control
+it using a keyboard and mouse. Rebooting the device is necessary once this
+option is set.
 
 [control]: https://github.com/Genymobile/scrcpy/issues/70#issuecomment-373286323
 
-Note that USB debugging is not required to run scrcpy in [OTG
-mode](doc/hid-otg.md#otg).
+Note that USB debugging is not required to run scrcpy in [OTG mode](doc/otg.md).
 
 
 ## Get the app
@@ -67,6 +75,41 @@ mode](doc/hid-otg.md#otg).
  - [Windows](doc/windows.md)
  - [macOS](doc/macos.md)
 
+
+## Usage examples
+
+There are a lot of options, [documented](#user-documentation) in separate pages.
+Here are just some common examples.
+
+ - Capture the screen in H.265 (better quality), limit the size to 1920, limit
+   the frame rate to 60fps, disable audio, and control the device by simulating
+   a physical keyboard:
+
+    ```bash
+    scrcpy --video-codec=h265 --max-size=1920 --max-fps=60 --no-audio --keyboard=uhid
+    scrcpy --video-codec=h265 -m1920 --max-fps=60 --no-audio -K  # short version
+    ```
+
+ - Record the device camera in H.265 at 1920x1080 (and microphone) to an MP4
+   file:
+
+    ```bash
+    scrcpy --video-source=camera --video-codec=h265 --camera-size=1920x1080 --record=file.mp4
+    ```
+
+ - Capture the device front camera and expose it as a webcam on the computer (on
+   Linux):
+
+    ```bash
+    scrcpy --video-source=camera --camera-size=1920x1080 --camera-facing=front --v4l2-sink=/dev/video2 --no-playback
+    ```
+
+ - Control the device without mirroring by simulating a physical keyboard and
+   mouse (USB debugging not required):
+
+    ```bash
+    scrcpy --otg
+    ```
 
 ## User documentation
 
@@ -77,11 +120,13 @@ documented in the following pages:
  - [Video](doc/video.md)
  - [Audio](doc/audio.md)
  - [Control](doc/control.md)
+ - [Keyboard](doc/keyboard.md)
+ - [Mouse](doc/mouse.md)
  - [Device](doc/device.md)
  - [Window](doc/window.md)
  - [Recording](doc/recording.md)
  - [Tunnels](doc/tunnels.md)
- - [HID/OTG](doc/hid-otg.md)
+ - [OTG](doc/otg.md)
  - [Camera](doc/camera.md)
  - [Video4Linux](doc/v4l2.md)
  - [Shortcuts](doc/shortcuts.md)
@@ -109,11 +154,14 @@ documented in the following pages:
 
 ## Contact
 
-If you encounter a bug, please read the [FAQ](FAQ.md) first, then open an [issue].
+You can open an [issue] for bug reports, feature requests or general questions.
+
+For bug reports, please read the [FAQ](FAQ.md) first, you might find a solution
+to your problem immediately.
 
 [issue]: https://github.com/Genymobile/scrcpy/issues
 
-For general questions or discussions, you can also use:
+You can also use:
 
  - Reddit: [`r/scrcpy`](https://www.reddit.com/r/scrcpy)
  - Twitter: [`@scrcpy_app`](https://twitter.com/scrcpy_app)
@@ -134,7 +182,7 @@ work][donate]:
 ## Licence
 
     Copyright (C) 2018 Genymobile
-    Copyright (C) 2018-2023 Romain Vimont
+    Copyright (C) 2018-2024 Romain Vimont
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
