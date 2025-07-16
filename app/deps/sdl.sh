@@ -28,7 +28,7 @@ export CXXFLAGS="$CFLAGS"
 
 if [[ -d "$DIRNAME" ]]
 then
-    echo "'$PWD/$HDIRNAME' already exists, not reconfigured"
+    echo "'$PWD/$DIRNAME' already exists, not reconfigured"
     cd "$DIRNAME"
 else
     mkdir "$DIRNAME"
