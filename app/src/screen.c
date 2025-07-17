@@ -409,7 +409,7 @@ sc_screen_init(struct sc_screen *screen,
     } else {
         // without video, the icon is used as window content, it must be present
         LOGE("Could not load icon");
-        goto error_destroy_fps_counter;
+        goto error_destroy_window;
     }
 
     SDL_Surface *icon_novideo = params->video ? NULL : icon;
