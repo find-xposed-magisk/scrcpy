@@ -36,4 +36,19 @@ public class DisplayWindowListener extends IDisplayWindowListener.Stub {
     public void onKeepClearAreasChanged(int displayId, List<Rect> restricted, List<Rect> unrestricted) {
         // empty default implementation
     }
+
+    @Override
+    public void onDesktopModeEligibleChanged(int displayId) {
+        // empty default implementation
+    }
+
+    @Override
+    public void onDisplayAddSystemDecorations(int displayId) {
+        // empty default implementation
+    }
+
+    @Override
+    public void onDisplayRemoveSystemDecorations(int displayId) {
+        // empty default implementation
+    }
 }
