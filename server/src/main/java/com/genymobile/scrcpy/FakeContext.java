@@ -5,7 +5,6 @@ import com.genymobile.scrcpy.wrappers.ServiceManager;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.AttributionSource;
-import android.content.ClipboardManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -92,6 +91,11 @@ public final class FakeContext extends ContextWrapper {
     }
 
     @Override
+    public Context createPackageContext(String packageName, int flags) {
+        return this;
+    }
+
+    @Override
     public ContentResolver getContentResolver() {
         return contentResolver;
     }
@@ -104,9 +108,11 @@ public final class FakeContext extends ContextWrapper {
             return null;
         }
 
-        if (Context.CLIPBOARD_SERVICE.equals(name)) {
+        // "semclipboard" is a Samsung-internal service
+        // See <https://github.com/Genymobile/scrcpy/issues/6224>
+        if (Context.CLIPBOARD_SERVICE.equals(name) || "semclipboard".equals(name)) {
             try {
-                Field field = ClipboardManager.class.getDeclaredField("mContext");
+                Field field = service.getClass().getDeclaredField("mContext");
                 field.setAccessible(true);
                 field.set(service, this);
             } catch (ReflectiveOperationException e) {
