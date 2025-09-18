@@ -48,27 +48,4 @@ oneway interface IDisplayWindowListener {
      * Called when a display is removed from the hierarchy.
      */
     void onDisplayRemoved(int displayId);
-
-    /**
-     * Called when fixed rotation is started on a display.
-     */
-    void onFixedRotationStarted(int displayId, int newRotation);
-
-    /**
-     * Called when the previous fixed rotation on a display is finished.
-     */
-    void onFixedRotationFinished(int displayId);
-
-    /**
-     * Called when the keep clear ares on a display have changed.
-     */
-    void onKeepClearAreasChanged(int displayId, in List<Rect> restricted, in List<Rect> unrestricted);
-
-    /**
-     * Called when the eligibility of the desktop mode for a display have changed.
-     */
-    void onDesktopModeEligibleChanged(int displayId);
-
-    void onDisplayAddSystemDecorations(int displayId);
-    void onDisplayRemoveSystemDecorations(int displayId);
 }
