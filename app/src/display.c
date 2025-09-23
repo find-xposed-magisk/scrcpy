@@ -170,6 +170,7 @@ sc_display_set_pending_frame(struct sc_display *display, const AVFrame *frame) {
         }
     }
 
+    av_frame_unref(display->pending.frame);
     int r = av_frame_ref(display->pending.frame, frame);
     if (r) {
         LOGE("Could not ref frame: %d", r);
