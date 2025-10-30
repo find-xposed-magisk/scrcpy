@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 set -ex
-DEPS_DIR=$(dirname ${BASH_SOURCE[0]})
-cd "$DEPS_DIR"
-. common
+. $(dirname ${BASH_SOURCE[0]})/_init "$@"
 
 VERSION=36.0.0
 FILENAME=platform-tools_r$VERSION-darwin.zip
