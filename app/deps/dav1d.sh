@@ -4,9 +4,11 @@ set -ex
 process_args "$@"
 
 VERSION=1.5.0
-FILENAME=dav1d-$VERSION.tar.gz
-PROJECT_DIR=dav1d-$VERSION
+URL="https://code.videolan.org/videolan/dav1d/-/archive/$VERSION/dav1d-$VERSION.tar.gz"
 SHA256SUM=78b15d9954b513ea92d27f39362535ded2243e1b0924fde39f37a31ebed5f76b
+
+PROJECT_DIR="dav1d-$VERSION"
+FILENAME="$PROJECT_DIR.tar.gz"
 
 cd "$SOURCES_DIR"
 
@@ -14,7 +16,7 @@ if [[ -d "$PROJECT_DIR" ]]
 then
     echo "$PWD/$PROJECT_DIR" found
 else
-    get_file "https://code.videolan.org/videolan/dav1d/-/archive/$VERSION/$FILENAME" "$FILENAME" "$SHA256SUM"
+    get_file "$URL" "$FILENAME" "$SHA256SUM"
     tar xf "$FILENAME"  # First level directory is "$PROJECT_DIR"
 fi
 
