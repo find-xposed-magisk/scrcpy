@@ -225,8 +225,8 @@ public final class Server {
     }
 
     private static void internalMain(String... args) throws Exception {
+        Thread.UncaughtExceptionHandler defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-            Thread.UncaughtExceptionHandler defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
             Ln.e("Exception on thread " + t, e);
             if (defaultHandler != null) {
                 defaultHandler.uncaughtException(t, e);
