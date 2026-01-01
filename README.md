@@ -210,7 +210,7 @@ work][donate]:
 ## License
 
     Copyright (C) 2018 Genymobile
-    Copyright (C) 2018-2025 Romain Vimont
+    Copyright (C) 2018-2026 Romain Vimont
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
