@@ -144,6 +144,9 @@ int main(int argc, char *argv[])
     qInfo() << QObject::tr("If you need more professional game keymap mirror software, you can try the following software:");
     qInfo() << QString(QObject::tr("QuickAssistant") + " <https://lrbnfell4p.feishu.cn/drive/folder/Hqckfxj5el1Wjpd9uezcX71lnBh>");
 
+    qInfo() << QObject::tr("If you need more professional PC remote software, you can try the following software:");
+    qInfo() << QString(QObject::tr("QuickDesk") + " <https://github.com/barry-ran/QuickDesk>");
+
     qInfo() << QObject::tr("You can contact me with telegram <https://t.me/+Ylf_5V_rDCMyODQ1>");
 
     int ret = a.exec();
