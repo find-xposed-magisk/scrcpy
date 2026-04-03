@@ -13,12 +13,12 @@ on:
 jobs:
   build:
     name: Build
-    # install-qt-action在arm上执行macdeployqt会报parse otool错误，所以在intel mac上执行:
-    # 用qt6时在arm mac上编译arm和intel都没有问题
-    # qt5+intel mac编译intel没问题
-    # qt5+arm mac编译intel会报错
+    # macos-13 (Intel) runners are no longer supported by GitHub Actions.
+    # Use macos-14 (Apple Silicon) for all builds:
+    # - Qt6: native arm64 build on macos-14
+    # - Qt5: x86_64 build via Rosetta 2 on macos-14 (clang_64 Qt tools run under Rosetta)
     # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
-    runs-on: macos-13
+    runs-on: ${{ matrix.runs-on }}
     strategy:
       matrix:
         qt-ver: [5.15.2, 6.5.3]        
@@ -27,9 +27,11 @@ jobs:
           - qt-ver: 5.15.2
             qt-arch-install: clang_64
             build-arch: x64
+            runs-on: macos-14
           - qt-ver: 6.5.3
             qt-arch-install: arm64
             build-arch: arm64
+            runs-on: macos-14
     env:
       target-name: QtScrcpy
       qt-install-path: ${{ github.workspace }}/${{ matrix.qt-ver }}
