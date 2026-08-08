@@ -28,11 +28,32 @@ ToolForm::~ToolForm()
 void ToolForm::setSerial(const QString &serial)
 {
     m_serial = serial;
+    updateCameraMode();
 }
 
 bool ToolForm::isHost()
 {
     return m_isHost;
+}
+
+void ToolForm::updateCameraMode()
+{
+    auto device = qsc::IDeviceManage::getInstance().getDevice(m_serial);
+    const bool camera = device && device->isCameraMode();
+
+    ui->groupControlBtn->setVisible(!camera);
+    ui->expandNotifyBtn->setVisible(!camera);
+    ui->touchBtn->setVisible(!camera);
+    ui->openScreenBtn->setVisible(!camera);
+    ui->closeScreenBtn->setVisible(!camera);
+    ui->powerBtn->setVisible(!camera);
+    ui->volumeUpBtn->setVisible(!camera);
+    ui->volumeDownBtn->setVisible(!camera);
+    ui->appSwitchBtn->setVisible(!camera);
+    ui->menuBtn->setVisible(!camera);
+    ui->homeBtn->setVisible(!camera);
+    ui->returnBtn->setVisible(!camera);
+    ui->clipboardBtn->setVisible(!camera);
 }
 
 void ToolForm::initStyle()

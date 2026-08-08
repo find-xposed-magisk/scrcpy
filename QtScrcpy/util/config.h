@@ -24,6 +24,8 @@ struct UserBootConfig
     bool autoUpdateDevice = true;
     bool showToolbar      = true;
     int decodeMode        = 0;  // 0=FFmpeg OpenGL (默认), 1=VideoToolbox Metal (Apple Silicon)
+    int videoSource       = 0;  // 0=display, 1=camera
+    int cameraFacing      = 0;  // 0=back, 1=front
 };
 
 class QSettings;

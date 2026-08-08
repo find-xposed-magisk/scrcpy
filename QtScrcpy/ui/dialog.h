@@ -67,6 +67,8 @@ private slots:
 
     void on_autoUpdatecheckBox_toggled(bool checked);
 
+    void on_videoSourceBox_currentIndexChanged(int index);
+
     void showIpEditMenu(const QPoint &pos);
 
 private:
@@ -80,6 +82,7 @@ private:
     int findDeviceFromeSerialBox(bool wifi);
     quint32 getBitRate();
     const QString &getServerPath();
+    void updateVideoSourceUi();
     void loadIpHistory();
     void saveIpHistory(const QString &ip);
     void loadPortHistory();

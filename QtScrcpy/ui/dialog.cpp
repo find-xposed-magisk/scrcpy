@@ -170,6 +170,11 @@ void Dialog::initUI()
     ui->maxSizeBox->addItem("1920");
     ui->maxSizeBox->addItem(tr("original"));
 
+    ui->videoSourceBox->addItem(tr("display"));
+    ui->videoSourceBox->addItem(tr("camera"));
+    ui->cameraFacingBox->addItem(tr("back"));
+    ui->cameraFacingBox->addItem(tr("front"));
+
     ui->formatBox->addItem("mp4");
     ui->formatBox->addItem("mkv");
 
@@ -245,6 +250,9 @@ void Dialog::updateBootConfig(bool toView)
         ui->autoUpdatecheckBox->setChecked(config.autoUpdateDevice);
         ui->showToolbar->setChecked(config.showToolbar);
         ui->decodeModeBox->setCurrentIndex(config.decodeMode);
+        ui->videoSourceBox->setCurrentIndex(config.videoSource);
+        ui->cameraFacingBox->setCurrentIndex(config.cameraFacing);
+        updateVideoSourceUi();
     } else {
         UserBootConfig config;
 
@@ -265,6 +273,8 @@ void Dialog::updateBootConfig(bool toView)
         config.autoUpdateDevice = ui->autoUpdatecheckBox->isChecked();
         config.showToolbar = ui->showToolbar->isChecked();
         config.decodeMode = ui->decodeModeBox->currentIndex();
+        config.videoSource = ui->videoSourceBox->currentIndex();
+        config.cameraFacing = ui->cameraFacingBox->currentIndex();
 
         // 保存当前IP到历史记录
         QString currentIp = ui->deviceIpEdt->currentText().trimmed();
@@ -351,6 +361,25 @@ void Dialog::on_updateDevice_clicked()
     m_adb.execute("", QStringList() << "devices");
 }
 
+void Dialog::updateVideoSourceUi()
+{
+    const bool camera = ui->videoSourceBox->currentIndex() == qsc::VIDEO_SOURCE_CAMERA;
+    ui->cameraFacingLabel->setEnabled(camera);
+    ui->cameraFacingBox->setEnabled(camera);
+    ui->closeScreenCheck->setEnabled(!camera);
+    ui->stayAwakeCheck->setEnabled(!camera);
+    ui->gameBox->setEnabled(!camera);
+    ui->refreshGameScriptBtn->setEnabled(!camera);
+    ui->applyScriptBtn->setEnabled(!camera);
+    ui->installSndcpyBtn->setEnabled(!camera);
+    ui->startAudioBtn->setEnabled(!camera);
+}
+
+void Dialog::on_videoSourceBox_currentIndexChanged(int)
+{
+    updateVideoSourceUi();
+}
+
 void Dialog::on_startServerBtn_clicked()
 {
     outLog("start server...", false);
@@ -363,7 +392,10 @@ void Dialog::on_startServerBtn_clicked()
     params.bitRate = getBitRate();
     // on devices with Android >= 10, the capture frame rate can be limited
     params.maxFps = static_cast<quint32>(Config::getInstance().getMaxFps());
-    params.closeScreen = ui->closeScreenCheck->isChecked();
+    params.videoSource = static_cast<qsc::VideoSource>(ui->videoSourceBox->currentIndex());
+    params.cameraFacing = static_cast<qsc::CameraFacing>(ui->cameraFacingBox->currentIndex());
+    const bool camera = params.videoSource == qsc::VIDEO_SOURCE_CAMERA;
+    params.closeScreen = !camera && ui->closeScreenCheck->isChecked();
     params.useReverse = ui->useReverseCheck->isChecked();
     params.display = !ui->notDisplayCheck->isChecked();
     params.renderExpiredFrames = Config::getInstance().getRenderExpiredFrames();
@@ -371,21 +403,51 @@ void Dialog::on_startServerBtn_clicked()
         params.captureOrientationLock = 1;
         params.captureOrientation = (ui->lockOrientationBox->currentIndex() - 1) * 90;
     }
-    params.stayAwake = ui->stayAwakeCheck->isChecked();
+    // Camera sensors expose their video stream in landscape by default. Rotate
+    // the default camera preview to portrait, while preserving an explicit
+    // orientation selected by the user.
+    if (camera && params.captureOrientationLock == 0) {
+        params.captureOrientation = 90;
+    }
+    params.stayAwake = !camera && ui->stayAwakeCheck->isChecked();
     params.recordFile = ui->recordScreenCheck->isChecked();
     params.recordPath = ui->recordPathEdt->text().trimmed();
     params.recordFileFormat = ui->formatBox->currentText().trimmed();
     params.serverLocalPath = getServerPath();
     params.serverRemotePath = Config::getInstance().getServerPath();
     params.pushFilePath = Config::getInstance().getPushFilePath();
-    params.gameScript = getGameScript(ui->gameBox->currentText());
+    params.gameScript = camera ? QString() : getGameScript(ui->gameBox->currentText());
     params.logLevel = Config::getInstance().getLogLevel();
     params.codecOptions = Config::getInstance().getCodecOptions();
     params.codecName = Config::getInstance().getCodecName();
     params.scid = QRandomGenerator::global()->bounded(1, 10000) & 0x7FFFFFFF;
     params.decodeMode = ui->decodeModeBox->currentIndex();
 
-    qsc::IDeviceManage::getInstance().connectDevice(params);
+    if (!camera) {
+        qsc::IDeviceManage::getInstance().connectDevice(params);
+        return;
+    }
+
+    auto *versionAdb = new qsc::AdbProcess(this);
+    connect(versionAdb, &qsc::AdbProcess::adbProcessResult, this,
+            [this, versionAdb, params](qsc::AdbProcess::ADB_EXEC_RESULT result) {
+        if (result == qsc::AdbProcess::AER_SUCCESS_EXEC) {
+            bool ok = false;
+            const int sdk = versionAdb->getStdOut().trimmed().toInt(&ok);
+            if (ok && sdk >= 31) {
+                qsc::IDeviceManage::getInstance().connectDevice(params);
+            } else {
+                outLog(tr("camera preview requires Android 12 or later"));
+            }
+            versionAdb->deleteLater();
+        } else if (result == qsc::AdbProcess::AER_ERROR_EXEC
+                   || result == qsc::AdbProcess::AER_ERROR_START
+                   || result == qsc::AdbProcess::AER_ERROR_MISSING_BINARY) {
+            outLog(tr("could not verify Android version for camera preview"));
+            versionAdb->deleteLater();
+        }
+    });
+    versionAdb->execute(params.serial, QStringList() << "shell" << "getprop" << "ro.build.version.sdk");
 }
 
 void Dialog::on_stopServerBtn_clicked()

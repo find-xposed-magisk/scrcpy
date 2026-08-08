@@ -512,6 +512,12 @@ void VideoForm::updateShowSize(const QSize &newSize)
     }
 }
 
+void VideoForm::onVideoSessionChanged(const QSize &size, bool clientResized)
+{
+    Q_UNUSED(clientResized);
+    updateShowSize(size);
+}
+
 void VideoForm::switchFullScreen()
 {
     if (isFullScreen()) {

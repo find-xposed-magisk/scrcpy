@@ -305,6 +305,44 @@
           <number>5</number>
          </property>
          <item>
+          <widget class="QWidget" name="videoSourceWidget" native="true">
+           <layout class="QHBoxLayout" name="videoSourceLayout">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="videoSourceLabel">
+              <property name="text">
+               <string>video source:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="videoSourceBox"/>
+            </item>
+            <item>
+             <widget class="QLabel" name="cameraFacingLabel">
+              <property name="text">
+               <string>camera:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="cameraFacingBox"/>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
           <widget class="QWidget" name="configWidget1" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">

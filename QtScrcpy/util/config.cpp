@@ -102,6 +102,12 @@
 #define COMMON_DECODE_MODE_KEY "DecodeMode"
 #define COMMON_DECODE_MODE_DEF 0
 
+#define COMMON_VIDEO_SOURCE_KEY "VideoSource"
+#define COMMON_VIDEO_SOURCE_DEF 0
+
+#define COMMON_CAMERA_FACING_KEY "CameraFacing"
+#define COMMON_CAMERA_FACING_DEF 0
+
 // device config
 #define SERIAL_WINDOW_RECT_KEY_X "WindowRectX"
 #define SERIAL_WINDOW_RECT_KEY_Y "WindowRectY"
@@ -182,6 +188,8 @@ void Config::setUserBootConfig(const UserBootConfig &config)
     m_userData->setValue(COMMON_AUTO_UPDATE_DEVICE_KEY, config.autoUpdateDevice);
     m_userData->setValue(COMMON_SHOW_TOOLBAR_KEY, config.showToolbar);
     m_userData->setValue(COMMON_DECODE_MODE_KEY, config.decodeMode);
+    m_userData->setValue(COMMON_VIDEO_SOURCE_KEY, config.videoSource);
+    m_userData->setValue(COMMON_CAMERA_FACING_KEY, config.cameraFacing);
     m_userData->endGroup();
     m_userData->sync();
 }
@@ -207,6 +215,8 @@ UserBootConfig Config::getUserBootConfig()
     config.autoUpdateDevice = m_userData->value(COMMON_AUTO_UPDATE_DEVICE_KEY, COMMON_AUTO_UPDATE_DEVICE_DEF).toBool();
     config.showToolbar =m_userData->value(COMMON_SHOW_TOOLBAR_KEY,COMMON_SHOW_TOOLBAR_DEF).toBool();
     config.decodeMode = m_userData->value(COMMON_DECODE_MODE_KEY, COMMON_DECODE_MODE_DEF).toInt();
+    config.videoSource = m_userData->value(COMMON_VIDEO_SOURCE_KEY, COMMON_VIDEO_SOURCE_DEF).toInt();
+    config.cameraFacing = m_userData->value(COMMON_CAMERA_FACING_KEY, COMMON_CAMERA_FACING_DEF).toInt();
     m_userData->endGroup();
     return config;
 }

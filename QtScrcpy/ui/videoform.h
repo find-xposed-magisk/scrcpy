@@ -41,6 +41,7 @@ private:
     // VideoToolbox Metal 路径帧回调（仅 macOS arm64）
     void onFrameMetal(void* cvPixelBuffer, int width, int height) override;
     void updateFPS(quint32 fps) override;
+    void onVideoSessionChanged(const QSize &size, bool clientResized) override;
     void grabCursor(bool grab) override;
 
     void updateStyleSheet(bool vertical);

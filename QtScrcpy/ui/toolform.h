@@ -52,6 +52,7 @@ private slots:
 private:
     void initStyle();
     void updateGroupControl();
+    void updateCameraMode();
 
 private:
     Ui::ToolForm *ui;
