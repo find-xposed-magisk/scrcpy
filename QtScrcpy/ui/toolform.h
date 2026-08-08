@@ -44,6 +44,8 @@ private slots:
     void on_volumeDownBtn_clicked();
     void on_closeScreenBtn_clicked();
     void on_expandNotifyBtn_clicked();
+    void on_expandSettingsBtn_clicked();
+    void on_rotateBtn_clicked();
     void on_touchBtn_clicked();
     void on_cameraTorchBtn_clicked();
     void on_cameraZoomOutBtn_clicked();

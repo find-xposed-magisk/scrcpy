@@ -292,6 +292,17 @@ void GroupController::expandNotificationPanel()
     }
 }
 
+void GroupController::expandSettingsPanel()
+{
+    for (const auto& serial : m_devices) {
+        if (!isHost(serial)) {
+            if (auto device = qsc::IDeviceManage::getInstance().getDevice(serial)) {
+                device->expandSettingsPanel();
+            }
+        }
+    }
+}
+
 void GroupController::collapsePanel()
 {
     for (const auto& serial : m_devices) {
@@ -304,6 +315,28 @@ void GroupController::collapsePanel()
         }
 
         device->collapsePanel();
+    }
+}
+
+void GroupController::rotateDevice()
+{
+    for (const auto& serial : m_devices) {
+        if (!isHost(serial)) {
+            if (auto device = qsc::IDeviceManage::getInstance().getDevice(serial)) {
+                device->rotateDevice();
+            }
+        }
+    }
+}
+
+void GroupController::startApp(const QString &name)
+{
+    for (const auto& serial : m_devices) {
+        if (!isHost(serial)) {
+            if (auto device = qsc::IDeviceManage::getInstance().getDevice(serial)) {
+                device->startApp(name);
+            }
+        }
     }
 }
 

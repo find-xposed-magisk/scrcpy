@@ -43,6 +43,8 @@ void ToolForm::updateCameraMode()
 
     ui->groupControlBtn->setVisible(!camera);
     ui->expandNotifyBtn->setVisible(!camera);
+    ui->expandSettingsBtn->setVisible(!camera);
+    ui->rotateBtn->setVisible(!camera);
     ui->touchBtn->setVisible(!camera);
     ui->openScreenBtn->setVisible(!camera);
     ui->closeScreenBtn->setVisible(!camera);
@@ -73,6 +75,8 @@ void ToolForm::initStyle()
     IconHelper::Instance()->SetIcon(ui->closeScreenBtn, QChar(0xf070), 15);
     IconHelper::Instance()->SetIcon(ui->powerBtn, QChar(0xf011), 15);
     IconHelper::Instance()->SetIcon(ui->expandNotifyBtn, QChar(0xf103), 15);
+    IconHelper::Instance()->SetIcon(ui->expandSettingsBtn, QChar(0xf013), 15);
+    IconHelper::Instance()->SetIcon(ui->rotateBtn, QChar(0xf021), 15);
     IconHelper::Instance()->SetIcon(ui->screenShotBtn, QChar(0xf0c4), 15);
     IconHelper::Instance()->SetIcon(ui->touchBtn, QChar(0xf111), 15);
     IconHelper::Instance()->SetIcon(ui->groupControlBtn, QChar(0xf0c0), 15);
@@ -232,6 +236,22 @@ void ToolForm::on_expandNotifyBtn_clicked()
         return;
     }
     device->expandNotificationPanel();
+}
+
+void ToolForm::on_expandSettingsBtn_clicked()
+{
+    auto device = qsc::IDeviceManage::getInstance().getDevice(m_serial);
+    if (device) {
+        device->expandSettingsPanel();
+    }
+}
+
+void ToolForm::on_rotateBtn_clicked()
+{
+    auto device = qsc::IDeviceManage::getInstance().getDevice(m_serial);
+    if (device) {
+        device->rotateDevice();
+    }
 }
 
 void ToolForm::on_touchBtn_clicked()

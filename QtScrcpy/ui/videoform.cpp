@@ -33,6 +33,14 @@
 VideoForm::VideoForm(bool framelessWindow, bool skin, bool showToolbar, int decodeMode, QWidget *parent) : QWidget(parent), ui(new Ui::videoForm), m_skin(skin), m_decodeMode(decodeMode)
 {
     ui->setupUi(this);
+    m_flexResizeTimer.setSingleShot(true);
+    m_flexResizeTimer.setInterval(300);
+    connect(&m_flexResizeTimer, &QTimer::timeout, this, [this]() {
+        auto device = qsc::IDeviceManage::getInstance().getDevice(m_serial);
+        if (device && device->isFlexDisplay() && !m_pendingDisplaySize.isEmpty()) {
+            device->resizeDisplay(m_pendingDisplaySize);
+        }
+    });
     initUI();
     installShortcut();
     updateShowSize(size());
@@ -208,7 +216,11 @@ void VideoForm::updateRender(int width, int height, uint8_t* dataY, uint8_t* dat
         m_videoWidget->show();
     }
 
-    updateShowSize(QSize(width, height));
+    if (!m_flexDisplay) {
+        updateShowSize(QSize(width, height));
+    } else {
+        m_frameSize = QSize(width, height);
+    }
     m_videoWidget->setFrameSize(QSize(width, height));
     m_videoWidget->updateTextures(dataY, dataU, dataV, linesizeY, linesizeU, linesizeV);
 }
@@ -216,6 +228,11 @@ void VideoForm::updateRender(int width, int height, uint8_t* dataY, uint8_t* dat
 void VideoForm::setSerial(const QString &serial)
 {
     m_serial = serial;
+    auto device = qsc::IDeviceManage::getInstance().getDevice(m_serial);
+    m_flexDisplay = device && device->isFlexDisplay();
+    if (m_flexDisplay) {
+        ui->keepRatioWidget->setWidthHeightRatio(-1.0f);
+    }
 }
 
 void VideoForm::showToolForm(bool show)
@@ -358,6 +375,24 @@ void VideoForm::installShortcut()
             return;
         }
         emit device->expandNotificationPanel();
+    });
+
+    shortcut = new QShortcut(QKeySequence("Ctrl+Alt+n"), this);
+    shortcut->setAutoRepeat(false);
+    connect(shortcut, &QShortcut::activated, this, [this]() {
+        auto device = qsc::IDeviceManage::getInstance().getDevice(m_serial);
+        if (device) {
+            device->expandSettingsPanel();
+        }
+    });
+
+    shortcut = new QShortcut(QKeySequence("Ctrl+r"), this);
+    shortcut->setAutoRepeat(false);
+    connect(shortcut, &QShortcut::activated, this, [this]() {
+        auto device = qsc::IDeviceManage::getInstance().getDevice(m_serial);
+        if (device) {
+            device->rotateDevice();
+        }
     });
 
     // collapsePanel
@@ -514,7 +549,15 @@ void VideoForm::updateShowSize(const QSize &newSize)
 
 void VideoForm::onVideoSessionChanged(const QSize &size, bool clientResized)
 {
-    Q_UNUSED(clientResized);
+    if (m_flexDisplay) {
+        m_frameSize = size;
+        m_preventAutoResize = clientResized;
+        ui->keepRatioWidget->setWidthHeightRatio(-1.0f);
+        return;
+    }
+    // clientResized is only meaningful for flex display. Normal display
+    // rotations must retain the longstanding auto-resize behavior.
+    m_preventAutoResize = false;
     updateShowSize(size);
 }
 
@@ -865,6 +908,14 @@ void VideoForm::showEvent(QShowEvent *event)
 void VideoForm::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event)
+    if (m_flexDisplay) {
+        m_pendingDisplaySize = ui->keepRatioWidget->size();
+        if (!m_pendingDisplaySize.isEmpty()) {
+            m_flexResizeTimer.start();
+        }
+        return;
+    }
+
     QSize goodSize = ui->keepRatioWidget->goodSize();
     if (goodSize.isEmpty()) {
         return;

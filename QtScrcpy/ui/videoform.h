@@ -2,6 +2,7 @@
 #define VIDEOFORM_H
 
 #include <QPointer>
+#include <QTimer>
 #include <QWidget>
 
 #include "../QtScrcpyCore/include/QtScrcpyCore.h"
@@ -99,6 +100,10 @@ private:
     QString m_serial;
     int m_decodeMode = 0;
     bool m_metalFirstFrame = true;  // Metal 首次帧标记
+    bool m_flexDisplay = false;
+    bool m_preventAutoResize = false;
+    QTimer m_flexResizeTimer;
+    QSize m_pendingDisplaySize;
 
     //Whether to display the toolbar when connecting a device.
     bool show_toolbar = true;

@@ -1,11 +1,20 @@
 ﻿#include <QDebug>
+#include <QAbstractItemView>
+#include <QCheckBox>
 #include <QFile>
 #include <QFileDialog>
+#include <QFormLayout>
+#include <QGroupBox>
 #include <QKeyEvent>
+#include <QComboBox>
+#include <QLineEdit>
 #include <QRandomGenerator>
 #include <QRegularExpression>
+#include <QSizePolicy>
+#include <QStyledItemDelegate>
 #include <QTime>
 #include <QTimer>
+#include <QVBoxLayout>
 
 #include "config.h"
 #include "dialog.h"
@@ -18,6 +27,21 @@
 #endif
 
 QString s_keyMapPath = "";
+
+namespace {
+class ComboBoxItemDelegate final : public QStyledItemDelegate
+{
+public:
+    explicit ComboBoxItemDelegate(QObject *parent = nullptr) : QStyledItemDelegate(parent) {}
+
+    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override
+    {
+        QSize hint = QStyledItemDelegate::sizeHint(option, index);
+        hint.setHeight(qMax(hint.height(), 30));
+        return hint;
+    }
+};
+} // namespace
 
 const QString &getKeyMapPath()
 {
@@ -218,6 +242,95 @@ void Dialog::initUI()
         connect(ui->devicePortEdt->lineEdit(), &QWidget::customContextMenuRequested,
                 this, &Dialog::showPortEditMenu);
     }
+    initAdvancedDisplayUi();
+
+    for (QComboBox *comboBox : findChildren<QComboBox *>()) {
+        comboBox->view()->setItemDelegate(new ComboBoxItemDelegate(comboBox->view()));
+    }
+
+    QSizePolicy simpleModePolicy = ui->simpleGroupBox->sizePolicy();
+    simpleModePolicy.setVerticalPolicy(QSizePolicy::Maximum);
+    ui->simpleGroupBox->setSizePolicy(simpleModePolicy);
+
+    QSizePolicy logPolicy = ui->outEdit->sizePolicy();
+    logPolicy.setVerticalPolicy(QSizePolicy::Expanding);
+    ui->outEdit->setSizePolicy(logPolicy);
+    ui->verticalLayout_5->setStretch(0, 0);
+    ui->verticalLayout_5->setStretch(1, 0);
+    ui->verticalLayout_5->setStretch(2, 0);
+    ui->verticalLayout_5->setStretch(3, 1);
+}
+
+void Dialog::initAdvancedDisplayUi()
+{
+    m_advancedDisplayGroup = new QGroupBox(tr("Advanced display"), this);
+    m_advancedDisplayGroup->setCheckable(true);
+    m_advancedDisplayGroup->setChecked(false);
+    auto *layout = new QFormLayout(m_advancedDisplayGroup);
+
+    m_displayModeBox = new QComboBox(m_advancedDisplayGroup);
+    m_displayModeBox->addItem(tr("Primary display"));
+    m_displayModeBox->addItem(tr("Existing display ID"));
+    m_displayModeBox->addItem(tr("New virtual display"));
+    layout->addRow(tr("Display mode"), m_displayModeBox);
+
+    m_displayIdEdit = new QLineEdit(m_advancedDisplayGroup);
+    m_displayIdEdit->setPlaceholderText("1");
+    layout->addRow(tr("Display ID"), m_displayIdEdit);
+
+    m_newDisplayEdit = new QLineEdit(m_advancedDisplayGroup);
+    m_newDisplayEdit->setPlaceholderText("1920x1080/240");
+    layout->addRow(tr("Virtual size / DPI"), m_newDisplayEdit);
+
+    m_cropEdit = new QLineEdit(m_advancedDisplayGroup);
+    m_cropEdit->setPlaceholderText("width:height:x:y");
+    layout->addRow(tr("Crop"), m_cropEdit);
+
+    m_flexDisplayCheck = new QCheckBox(tr("Resize virtual display with window"), m_advancedDisplayGroup);
+    layout->addRow(m_flexDisplayCheck);
+    m_displayImePolicyBox = new QComboBox(m_advancedDisplayGroup);
+    m_displayImePolicyBox->addItem(tr("Server default"), "");
+    m_displayImePolicyBox->addItem("local", "local");
+    m_displayImePolicyBox->addItem("fallback", "fallback");
+    m_displayImePolicyBox->addItem("hide", "hide");
+    layout->addRow(tr("IME policy"), m_displayImePolicyBox);
+    m_vdSystemDecorationsCheck = new QCheckBox(tr("Show system decorations"), m_advancedDisplayGroup);
+    m_vdSystemDecorationsCheck->setChecked(true);
+    layout->addRow(m_vdSystemDecorationsCheck);
+    m_vdDestroyContentCheck = new QCheckBox(tr("Destroy content on close"), m_advancedDisplayGroup);
+    m_vdDestroyContentCheck->setChecked(true);
+    layout->addRow(m_vdDestroyContentCheck);
+    m_keepActiveCheck = new QCheckBox(tr("Keep device active"), m_advancedDisplayGroup);
+    layout->addRow(m_keepActiveCheck);
+    m_startAppEdit = new QLineEdit(m_advancedDisplayGroup);
+    m_startAppEdit->setPlaceholderText("com.android.settings");
+    layout->addRow(tr("Start app"), m_startAppEdit);
+
+    // Keep infrequently used display parameters out of the primary start
+    // configuration, immediately above the expanding spacer on the right.
+    ui->verticalLayout_6->insertWidget(ui->verticalLayout_6->count() - 1, m_advancedDisplayGroup);
+    connect(m_displayModeBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &Dialog::updateAdvancedDisplayUi);
+    connect(m_flexDisplayCheck, &QCheckBox::toggled, this, &Dialog::updateAdvancedDisplayUi);
+    updateAdvancedDisplayUi();
+}
+
+void Dialog::updateAdvancedDisplayUi()
+{
+    if (!m_displayModeBox) {
+        return;
+    }
+    const bool existing = m_displayModeBox->currentIndex() == 1;
+    const bool virtualDisplay = m_displayModeBox->currentIndex() == 2;
+    m_displayIdEdit->setEnabled(existing);
+    m_newDisplayEdit->setEnabled(virtualDisplay);
+    m_flexDisplayCheck->setEnabled(virtualDisplay);
+    if (!virtualDisplay) {
+        m_flexDisplayCheck->setChecked(false);
+    }
+    m_displayImePolicyBox->setEnabled(virtualDisplay);
+    m_vdSystemDecorationsCheck->setEnabled(virtualDisplay);
+    m_vdDestroyContentCheck->setEnabled(virtualDisplay);
+    m_cropEdit->setEnabled(!m_flexDisplayCheck->isChecked());
 }
 
 void Dialog::updateBootConfig(bool toView)
@@ -253,6 +366,20 @@ void Dialog::updateBootConfig(bool toView)
         ui->decodeModeBox->setCurrentIndex(config.decodeMode);
         ui->videoSourceBox->setCurrentIndex(config.videoSource);
         ui->cameraFacingBox->setCurrentIndex(qBound(0, config.cameraFacing, 1));
+        if (m_advancedDisplayGroup) {
+            m_advancedDisplayGroup->setChecked(config.advancedDisplay);
+            m_displayModeBox->setCurrentIndex(qBound(0, config.displayMode, 2));
+            m_displayIdEdit->setText(config.displayId);
+            m_newDisplayEdit->setText(config.newDisplay);
+            m_cropEdit->setText(config.crop);
+            m_flexDisplayCheck->setChecked(config.flexDisplay);
+            m_displayImePolicyBox->setCurrentIndex(qMax(0, m_displayImePolicyBox->findData(config.displayImePolicy)));
+            m_vdSystemDecorationsCheck->setChecked(config.vdSystemDecorations);
+            m_vdDestroyContentCheck->setChecked(config.vdDestroyContent);
+            m_keepActiveCheck->setChecked(config.keepActive);
+            m_startAppEdit->setText(config.startApp);
+            updateAdvancedDisplayUi();
+        }
         updateVideoSourceUi();
     } else {
         UserBootConfig config;
@@ -276,6 +403,19 @@ void Dialog::updateBootConfig(bool toView)
         config.decodeMode = ui->decodeModeBox->currentIndex();
         config.videoSource = ui->videoSourceBox->currentIndex();
         config.cameraFacing = qMin(ui->cameraFacingBox->currentIndex(), 1);
+        if (m_advancedDisplayGroup) {
+            config.advancedDisplay = m_advancedDisplayGroup->isChecked();
+            config.displayMode = m_displayModeBox->currentIndex();
+            config.displayId = m_displayIdEdit->text().trimmed();
+            config.newDisplay = m_newDisplayEdit->text().trimmed();
+            config.crop = m_cropEdit->text().trimmed();
+            config.flexDisplay = m_flexDisplayCheck->isChecked();
+            config.displayImePolicy = m_displayImePolicyBox->currentData().toString();
+            config.vdSystemDecorations = m_vdSystemDecorationsCheck->isChecked();
+            config.vdDestroyContent = m_vdDestroyContentCheck->isChecked();
+            config.keepActive = m_keepActiveCheck->isChecked();
+            config.startApp = m_startAppEdit->text().trimmed();
+        }
 
         // 保存当前IP到历史记录
         QString currentIp = ui->deviceIpEdt->currentText().trimmed();
@@ -375,6 +515,9 @@ void Dialog::updateVideoSourceUi()
     ui->applyScriptBtn->setEnabled(!camera);
     ui->installSndcpyBtn->setEnabled(!camera);
     ui->startAudioBtn->setEnabled(!camera);
+    if (m_advancedDisplayGroup) {
+        m_advancedDisplayGroup->setEnabled(!camera);
+    }
 }
 
 void Dialog::on_videoSourceBox_currentIndexChanged(int)
@@ -427,22 +570,60 @@ void Dialog::on_startServerBtn_clicked()
     params.codecName = Config::getInstance().getCodecName();
     params.scid = QRandomGenerator::global()->bounded(1, 10000) & 0x7FFFFFFF;
     params.decodeMode = ui->decodeModeBox->currentIndex();
+    // Disabled widgets may remain checked from persisted settings. Advanced
+    // display options are not valid for camera capture, so never copy them
+    // into camera session parameters.
+    if (!camera && m_advancedDisplayGroup && m_advancedDisplayGroup->isChecked()) {
+        const int displayMode = m_displayModeBox->currentIndex();
+        if (displayMode == 1) {
+            bool ok = false;
+            const int displayId = m_displayIdEdit->text().trimmed().toInt(&ok);
+            if (!ok || displayId < 0) {
+                outLog(tr("invalid display ID"));
+                return;
+            }
+            params.displayId = displayId;
+        } else if (displayMode == 2) {
+            params.newDisplay = m_newDisplayEdit->text().trimmed();
+            if (params.newDisplay.isEmpty()) {
+                // Match scrcpy's flex default (1280x960 at 160 dpi) while
+                // keeping the command-line parameter explicit.
+                params.newDisplay = "1280x960/160";
+            }
+            params.flexDisplay = m_flexDisplayCheck->isChecked();
+            params.vdSystemDecorations = m_vdSystemDecorationsCheck->isChecked();
+            params.vdDestroyContent = m_vdDestroyContentCheck->isChecked();
+            params.displayImePolicy = m_displayImePolicyBox->currentData().toString();
+        }
+        params.keepActive = m_keepActiveCheck->isChecked();
+        params.startApp = m_startAppEdit->text().trimmed();
+        // scrcpy forbids crop with flex display. Preserve the entered value
+        // for a later non-flex session, but never pass it to the server.
+        params.crop = params.flexDisplay ? QString() : m_cropEdit->text().trimmed();
+    }
+    if (params.flexDisplay && (params.newDisplay.isEmpty() || !params.display || !params.crop.isEmpty())) {
+        outLog(tr("flex display requires video, a new virtual display, and no crop"));
+        return;
+    }
 
-    if (!camera) {
+    const bool needsVirtualDisplayCheck = !params.newDisplay.isEmpty();
+    if (!camera && !needsVirtualDisplayCheck) {
         qsc::IDeviceManage::getInstance().connectDevice(params);
         return;
     }
 
     auto *versionAdb = new qsc::AdbProcess(this);
     connect(versionAdb, &qsc::AdbProcess::adbProcessResult, this,
-            [this, versionAdb, params](qsc::AdbProcess::ADB_EXEC_RESULT result) {
+            [this, versionAdb, camera, params](qsc::AdbProcess::ADB_EXEC_RESULT result) {
         if (result == qsc::AdbProcess::AER_SUCCESS_EXEC) {
             bool ok = false;
             const int sdk = versionAdb->getStdOut().trimmed().toInt(&ok);
-            if (ok && sdk >= 31) {
+            const int minimumSdk = camera ? 31 : 29;
+            if (ok && sdk >= minimumSdk) {
                 qsc::IDeviceManage::getInstance().connectDevice(params);
             } else {
-                outLog(tr("camera preview requires Android 12 or later"));
+                outLog(camera ? tr("camera preview requires Android 12 or later")
+                              : tr("virtual display requires Android 10 or later"));
             }
             versionAdb->deleteLater();
         } else if (result == qsc::AdbProcess::AER_ERROR_EXEC

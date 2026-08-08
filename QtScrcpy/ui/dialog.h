@@ -20,6 +20,10 @@ namespace Ui
 }
 
 class QYUVOpenGLWidget;
+class QComboBox;
+class QLineEdit;
+class QCheckBox;
+class QGroupBox;
 class Dialog : public QWidget
 {
     Q_OBJECT
@@ -84,6 +88,8 @@ private:
     quint32 getBitRate();
     const QString &getServerPath();
     void updateVideoSourceUi();
+    void initAdvancedDisplayUi();
+    void updateAdvancedDisplayUi();
     void loadIpHistory();
     void saveIpHistory(const QString &ip);
     void loadPortHistory();
@@ -98,6 +104,17 @@ private:
     Ui::Widget *ui;
     qsc::AdbProcess m_adb;
     QSystemTrayIcon *m_hideIcon;
+    QGroupBox *m_advancedDisplayGroup = nullptr;
+    QComboBox *m_displayModeBox = nullptr;
+    QLineEdit *m_displayIdEdit = nullptr;
+    QLineEdit *m_newDisplayEdit = nullptr;
+    QLineEdit *m_cropEdit = nullptr;
+    QCheckBox *m_flexDisplayCheck = nullptr;
+    QComboBox *m_displayImePolicyBox = nullptr;
+    QCheckBox *m_vdSystemDecorationsCheck = nullptr;
+    QCheckBox *m_vdDestroyContentCheck = nullptr;
+    QCheckBox *m_keepActiveCheck = nullptr;
+    QLineEdit *m_startAppEdit = nullptr;
     QMenu *m_menu;
     QAction *m_showWindow;
     QAction *m_quit;

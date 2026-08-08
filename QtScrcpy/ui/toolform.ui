@@ -33,7 +33,7 @@
    <item>
     <widget class="QPushButton" name="fullScreenBtn">
      <property name="toolTip">
-      <string>full screen</string>
+      <string>full screen (Ctrl+F)</string>
      </property>
      <property name="text">
       <string/>
@@ -56,7 +56,27 @@
    <item>
     <widget class="QPushButton" name="expandNotifyBtn">
      <property name="toolTip">
-      <string>expand notify</string>
+      <string>expand notify (Ctrl+N)</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="expandSettingsBtn">
+     <property name="toolTip">
+      <string>expand settings panel (Ctrl+Alt+N)</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="rotateBtn">
+     <property name="toolTip">
+      <string>rotate device (Ctrl+R)</string>
      </property>
      <property name="text">
       <string/>
@@ -86,7 +106,7 @@
    <item>
     <widget class="QPushButton" name="closeScreenBtn">
      <property name="toolTip">
-      <string>close screen</string>
+      <string>close screen (Ctrl+O)</string>
      </property>
      <property name="text">
       <string/>
@@ -96,7 +116,7 @@
    <item>
     <widget class="QPushButton" name="powerBtn">
      <property name="toolTip">
-      <string>power</string>
+      <string>power (Ctrl+P)</string>
      </property>
      <property name="text">
       <string/>
@@ -106,7 +126,7 @@
    <item>
     <widget class="QPushButton" name="volumeUpBtn">
      <property name="toolTip">
-      <string>volume up</string>
+      <string>volume up (Ctrl+Up)</string>
      </property>
      <property name="text">
       <string/>
@@ -116,7 +136,7 @@
    <item>
     <widget class="QPushButton" name="volumeDownBtn">
      <property name="toolTip">
-      <string>volume down</string>
+      <string>volume down (Ctrl+Down)</string>
      </property>
      <property name="text">
       <string/>
@@ -126,7 +146,7 @@
    <item>
     <widget class="QPushButton" name="appSwitchBtn">
      <property name="toolTip">
-      <string>app switch</string>
+      <string>app switch (Ctrl+S)</string>
      </property>
      <property name="text">
       <string/>
@@ -136,7 +156,7 @@
    <item>
     <widget class="QPushButton" name="menuBtn">
      <property name="toolTip">
-      <string>menu</string>
+      <string>menu (Ctrl+M)</string>
      </property>
      <property name="text">
       <string/>
@@ -146,7 +166,7 @@
    <item>
     <widget class="QPushButton" name="homeBtn">
      <property name="toolTip">
-      <string>home</string>
+      <string>home (Ctrl+H)</string>
      </property>
      <property name="text">
       <string/>
@@ -156,7 +176,7 @@
    <item>
     <widget class="QPushButton" name="returnBtn">
      <property name="toolTip">
-      <string>return</string>
+      <string>return (Ctrl+B)</string>
      </property>
      <property name="text">
       <string/>

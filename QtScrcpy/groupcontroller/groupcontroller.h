@@ -33,7 +33,10 @@ private:
     void postCut() override;
     void setDisplayPower(bool on) override;
     void expandNotificationPanel() override;
+    void expandSettingsPanel() override;
     void collapsePanel() override;
+    void rotateDevice() override;
+    void startApp(const QString &name) override;
     void postBackOrScreenOn(bool down) override;
     void postTextInput(QString &text) override;
     void requestDeviceClipboard() override;
