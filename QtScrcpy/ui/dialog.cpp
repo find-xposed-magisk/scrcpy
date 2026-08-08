@@ -5,12 +5,14 @@
 #include <QFileDialog>
 #include <QFormLayout>
 #include <QGroupBox>
+#include <QGuiApplication>
 #include <QKeyEvent>
 #include <QComboBox>
 #include <QLineEdit>
 #include <QRandomGenerator>
 #include <QRegularExpression>
 #include <QSizePolicy>
+#include <QScreen>
 #include <QStyledItemDelegate>
 #include <QTime>
 #include <QTimer>
@@ -71,6 +73,11 @@ Dialog::Dialog(QWidget *parent) : QWidget(parent), ui(new Ui::Widget)
 #endif
 
     on_useSingleModeCheck_clicked();
+    if (QScreen *screen = QGuiApplication::primaryScreen()) {
+        const QRect availableGeometry = screen->availableGeometry();
+        move(availableGeometry.x() + (availableGeometry.width() - width()) / 2,
+             availableGeometry.y() + (availableGeometry.height() - height()) / 2);
+    }
     on_updateDevice_clicked();
 
     connect(&m_autoUpdatetimer, &QTimer::timeout, this, &Dialog::on_updateDevice_clicked);
