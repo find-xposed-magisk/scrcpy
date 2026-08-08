@@ -24,6 +24,7 @@ class QComboBox;
 class QLineEdit;
 class QCheckBox;
 class QGroupBox;
+class QPushButton;
 class Dialog : public QWidget
 {
     Q_OBJECT
@@ -73,6 +74,7 @@ private slots:
 
     void on_videoSourceBox_currentIndexChanged(int index);
     void on_refreshCameraBtn_clicked();
+    void on_refreshAppsBtn_clicked();
 
     void showIpEditMenu(const QPoint &pos);
 
@@ -114,7 +116,8 @@ private:
     QCheckBox *m_vdSystemDecorationsCheck = nullptr;
     QCheckBox *m_vdDestroyContentCheck = nullptr;
     QCheckBox *m_keepActiveCheck = nullptr;
-    QLineEdit *m_startAppEdit = nullptr;
+    QComboBox *m_startAppBox = nullptr;
+    QPushButton *m_refreshAppsBtn = nullptr;
     QMenu *m_menu;
     QAction *m_showWindow;
     QAction *m_quit;

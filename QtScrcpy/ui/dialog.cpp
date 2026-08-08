@@ -5,10 +5,12 @@
 #include <QFileDialog>
 #include <QFormLayout>
 #include <QGroupBox>
+#include <QHBoxLayout>
 #include <QGuiApplication>
 #include <QKeyEvent>
 #include <QComboBox>
 #include <QLineEdit>
+#include <QPushButton>
 #include <QRandomGenerator>
 #include <QRegularExpression>
 #include <QSizePolicy>
@@ -309,15 +311,27 @@ void Dialog::initAdvancedDisplayUi()
     layout->addRow(m_vdDestroyContentCheck);
     m_keepActiveCheck = new QCheckBox(tr("Keep device active"), m_advancedDisplayGroup);
     layout->addRow(m_keepActiveCheck);
-    m_startAppEdit = new QLineEdit(m_advancedDisplayGroup);
-    m_startAppEdit->setPlaceholderText("com.android.settings");
-    layout->addRow(tr("Start app"), m_startAppEdit);
+    auto *startAppWidget = new QWidget(m_advancedDisplayGroup);
+    auto *startAppLayout = new QHBoxLayout(startAppWidget);
+    startAppLayout->setContentsMargins(0, 0, 0, 0);
+    m_startAppBox = new QComboBox(startAppWidget);
+    m_startAppBox->setEditable(true);
+    m_startAppBox->setInsertPolicy(QComboBox::NoInsert);
+    m_startAppBox->setPlaceholderText("com.android.settings");
+    m_startAppBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    m_refreshAppsBtn = new QPushButton(tr("refresh"), startAppWidget);
+    m_refreshAppsBtn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    m_refreshAppsBtn->setFixedWidth(m_refreshAppsBtn->sizeHint().width());
+    startAppLayout->addWidget(m_startAppBox);
+    startAppLayout->addWidget(m_refreshAppsBtn);
+    layout->addRow(tr("Start app"), startAppWidget);
 
     // Keep infrequently used display parameters out of the primary start
     // configuration, immediately above the expanding spacer on the right.
     ui->verticalLayout_6->insertWidget(ui->verticalLayout_6->count() - 1, m_advancedDisplayGroup);
     connect(m_displayModeBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &Dialog::updateAdvancedDisplayUi);
     connect(m_flexDisplayCheck, &QCheckBox::toggled, this, &Dialog::updateAdvancedDisplayUi);
+    connect(m_refreshAppsBtn, &QPushButton::clicked, this, &Dialog::on_refreshAppsBtn_clicked);
     updateAdvancedDisplayUi();
 }
 
@@ -384,7 +398,7 @@ void Dialog::updateBootConfig(bool toView)
             m_vdSystemDecorationsCheck->setChecked(config.vdSystemDecorations);
             m_vdDestroyContentCheck->setChecked(config.vdDestroyContent);
             m_keepActiveCheck->setChecked(config.keepActive);
-            m_startAppEdit->setText(config.startApp);
+            m_startAppBox->setEditText(config.startApp);
             updateAdvancedDisplayUi();
         }
         updateVideoSourceUi();
@@ -421,7 +435,10 @@ void Dialog::updateBootConfig(bool toView)
             config.vdSystemDecorations = m_vdSystemDecorationsCheck->isChecked();
             config.vdDestroyContent = m_vdDestroyContentCheck->isChecked();
             config.keepActive = m_keepActiveCheck->isChecked();
-            config.startApp = m_startAppEdit->text().trimmed();
+            config.startApp = m_startAppBox->currentData().toString();
+            if (config.startApp.isEmpty()) {
+                config.startApp = m_startAppBox->currentText().trimmed();
+            }
         }
 
         // 保存当前IP到历史记录
@@ -603,7 +620,10 @@ void Dialog::on_startServerBtn_clicked()
             params.displayImePolicy = m_displayImePolicyBox->currentData().toString();
         }
         params.keepActive = m_keepActiveCheck->isChecked();
-        params.startApp = m_startAppEdit->text().trimmed();
+        params.startApp = m_startAppBox->currentData().toString();
+        if (params.startApp.isEmpty()) {
+            params.startApp = m_startAppBox->currentText().trimmed();
+        }
         // scrcpy forbids crop with flex display. Preserve the entered value
         // for a later non-flex session, but never pass it to the server.
         params.crop = params.flexDisplay ? QString() : m_cropEdit->text().trimmed();
@@ -714,6 +734,93 @@ void Dialog::on_refreshCameraBtn_clicked()
             ui->refreshCameraBtn->setText(tr("refresh"));
             ui->refreshCameraBtn->setEnabled(ui->videoSourceBox->currentIndex() == qsc::VIDEO_SOURCE_CAMERA);
             outLog(tr("camera refresh failed"));
+            pushAdb->deleteLater();
+        }
+    });
+    pushAdb->push(serial, getServerPath(), Config::getInstance().getServerPath());
+}
+
+void Dialog::on_refreshAppsBtn_clicked()
+{
+    const QString serial = ui->serialBox->currentText().trimmed();
+    if (serial.isEmpty()) {
+        outLog(tr("no device"));
+        return;
+    }
+    if (qsc::IDeviceManage::getInstance().getDevice(serial)) {
+        outLog(tr("stop server first"));
+        return;
+    }
+
+    m_refreshAppsBtn->setEnabled(false);
+    m_refreshAppsBtn->setText("...");
+
+    auto restoreRefreshButton = [this]() {
+        m_refreshAppsBtn->setText(tr("refresh"));
+        m_refreshAppsBtn->setEnabled(ui->videoSourceBox->currentIndex() == qsc::VIDEO_SOURCE_DISPLAY);
+    };
+
+    auto *pushAdb = new qsc::AdbProcess(this);
+    connect(pushAdb, &qsc::AdbProcess::adbProcessResult, this,
+            [this, pushAdb, serial, restoreRefreshButton](qsc::AdbProcess::ADB_EXEC_RESULT result) {
+        if (result == qsc::AdbProcess::AER_SUCCESS_EXEC) {
+            pushAdb->deleteLater();
+
+            auto *listAdb = new qsc::AdbProcess(this);
+            connect(listAdb, &qsc::AdbProcess::adbProcessResult, this,
+                    [this, listAdb, restoreRefreshButton](qsc::AdbProcess::ADB_EXEC_RESULT listResult) {
+                if (listResult == qsc::AdbProcess::AER_SUCCESS_START) {
+                    return;
+                }
+                restoreRefreshButton();
+
+                if (listResult != qsc::AdbProcess::AER_SUCCESS_EXEC) {
+                    outLog(tr("app refresh failed"));
+                    listAdb->deleteLater();
+                    return;
+                }
+
+                const QString selected = m_startAppBox->currentData().toString().isEmpty()
+                        ? m_startAppBox->currentText().trimmed()
+                        : m_startAppBox->currentData().toString();
+                const QString output = listAdb->getStdOut() + '\n' + listAdb->getErrorOut();
+                const QRegularExpression pattern(
+                        R"(^\s*[\*\-]\s+(.+?)\s+([A-Za-z0-9_]+(?:\.[A-Za-z0-9_]+)+)\s*$)",
+                        QRegularExpression::MultilineOption);
+                QRegularExpressionMatchIterator matches = pattern.globalMatch(output);
+
+                m_startAppBox->clear();
+                m_startAppBox->addItem(QString(), QString());
+                int appCount = 0;
+                while (matches.hasNext()) {
+                    const QRegularExpressionMatch match = matches.next();
+                    const QString name = match.captured(1).trimmed();
+                    const QString packageName = match.captured(2);
+                    m_startAppBox->addItem(QString("%1 (%2)").arg(name, packageName), packageName);
+                    ++appCount;
+                }
+
+                const int selectedIndex = m_startAppBox->findData(selected);
+                if (selectedIndex >= 0) {
+                    m_startAppBox->setCurrentIndex(selectedIndex);
+                } else {
+                    m_startAppBox->setEditText(selected);
+                }
+                outLog(appCount ? tr("apps refreshed") : tr("no launchable app"));
+                listAdb->deleteLater();
+            });
+
+            QStringList args;
+            args << "shell";
+            args << QString("CLASSPATH=%1").arg(Config::getInstance().getServerPath());
+            args << "app_process" << "/" << "com.genymobile.scrcpy.Server" << "4.1";
+            args << "list_apps=true" << "log_level=info";
+            listAdb->execute(serial, args);
+        } else if (result == qsc::AdbProcess::AER_ERROR_EXEC
+                   || result == qsc::AdbProcess::AER_ERROR_START
+                   || result == qsc::AdbProcess::AER_ERROR_MISSING_BINARY) {
+            restoreRefreshButton();
+            outLog(tr("app refresh failed"));
             pushAdb->deleteLater();
         }
     });
