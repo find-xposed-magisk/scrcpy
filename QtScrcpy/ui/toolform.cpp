@@ -54,6 +54,9 @@ void ToolForm::updateCameraMode()
     ui->homeBtn->setVisible(!camera);
     ui->returnBtn->setVisible(!camera);
     ui->clipboardBtn->setVisible(!camera);
+    ui->cameraTorchBtn->setVisible(camera);
+    ui->cameraZoomOutBtn->setVisible(camera);
+    ui->cameraZoomInBtn->setVisible(camera);
 }
 
 void ToolForm::initStyle()
@@ -74,6 +77,9 @@ void ToolForm::initStyle()
     IconHelper::Instance()->SetIcon(ui->touchBtn, QChar(0xf111), 15);
     IconHelper::Instance()->SetIcon(ui->groupControlBtn, QChar(0xf0c0), 15);
     IconHelper::Instance()->SetIcon(ui->clipboardBtn, QChar(0xf0c5), 15);
+    IconHelper::Instance()->SetIcon(ui->cameraTorchBtn, QChar(0xf0eb), 15);
+    IconHelper::Instance()->SetIcon(ui->cameraZoomOutBtn, QChar(0xf010), 15);
+    IconHelper::Instance()->SetIcon(ui->cameraZoomInBtn, QChar(0xf00e), 15);
 }
 
 void ToolForm::updateGroupControl()
@@ -237,6 +243,33 @@ void ToolForm::on_touchBtn_clicked()
 
     m_showTouch = !m_showTouch;
     device->showTouch(m_showTouch);
+}
+
+void ToolForm::on_cameraTorchBtn_clicked()
+{
+    auto device = qsc::IDeviceManage::getInstance().getDevice(m_serial);
+    if (!device || !device->isCameraMode()) {
+        return;
+    }
+    m_cameraTorch = !m_cameraTorch;
+    device->setCameraTorch(m_cameraTorch);
+    ui->cameraTorchBtn->setStyleSheet(m_cameraTorch ? "color: #f0c419" : "");
+}
+
+void ToolForm::on_cameraZoomOutBtn_clicked()
+{
+    auto device = qsc::IDeviceManage::getInstance().getDevice(m_serial);
+    if (device && device->isCameraMode()) {
+        device->cameraZoomOut();
+    }
+}
+
+void ToolForm::on_cameraZoomInBtn_clicked()
+{
+    auto device = qsc::IDeviceManage::getInstance().getDevice(m_serial);
+    if (device && device->isCameraMode()) {
+        device->cameraZoomIn();
+    }
 }
 
 void ToolForm::on_groupControlBtn_clicked()

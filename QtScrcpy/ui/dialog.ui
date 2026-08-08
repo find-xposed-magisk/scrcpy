@@ -339,6 +339,13 @@
             <item>
              <widget class="QComboBox" name="cameraFacingBox"/>
             </item>
+            <item>
+             <widget class="QPushButton" name="refreshCameraBtn">
+              <property name="text">
+               <string>refresh</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </widget>
          </item>

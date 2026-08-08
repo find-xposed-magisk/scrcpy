@@ -68,6 +68,7 @@ private slots:
     void on_autoUpdatecheckBox_toggled(bool checked);
 
     void on_videoSourceBox_currentIndexChanged(int index);
+    void on_refreshCameraBtn_clicked();
 
     void showIpEditMenu(const QPoint &pos);
 

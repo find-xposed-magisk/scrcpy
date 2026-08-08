@@ -3,6 +3,7 @@
 #include <QFileDialog>
 #include <QKeyEvent>
 #include <QRandomGenerator>
+#include <QRegularExpression>
 #include <QTime>
 #include <QTimer>
 
@@ -251,7 +252,7 @@ void Dialog::updateBootConfig(bool toView)
         ui->showToolbar->setChecked(config.showToolbar);
         ui->decodeModeBox->setCurrentIndex(config.decodeMode);
         ui->videoSourceBox->setCurrentIndex(config.videoSource);
-        ui->cameraFacingBox->setCurrentIndex(config.cameraFacing);
+        ui->cameraFacingBox->setCurrentIndex(qBound(0, config.cameraFacing, 1));
         updateVideoSourceUi();
     } else {
         UserBootConfig config;
@@ -274,7 +275,7 @@ void Dialog::updateBootConfig(bool toView)
         config.showToolbar = ui->showToolbar->isChecked();
         config.decodeMode = ui->decodeModeBox->currentIndex();
         config.videoSource = ui->videoSourceBox->currentIndex();
-        config.cameraFacing = ui->cameraFacingBox->currentIndex();
+        config.cameraFacing = qMin(ui->cameraFacingBox->currentIndex(), 1);
 
         // 保存当前IP到历史记录
         QString currentIp = ui->deviceIpEdt->currentText().trimmed();
@@ -366,6 +367,7 @@ void Dialog::updateVideoSourceUi()
     const bool camera = ui->videoSourceBox->currentIndex() == qsc::VIDEO_SOURCE_CAMERA;
     ui->cameraFacingLabel->setEnabled(camera);
     ui->cameraFacingBox->setEnabled(camera);
+    ui->refreshCameraBtn->setEnabled(camera);
     ui->closeScreenCheck->setEnabled(!camera);
     ui->stayAwakeCheck->setEnabled(!camera);
     ui->gameBox->setEnabled(!camera);
@@ -393,7 +395,10 @@ void Dialog::on_startServerBtn_clicked()
     // on devices with Android >= 10, the capture frame rate can be limited
     params.maxFps = static_cast<quint32>(Config::getInstance().getMaxFps());
     params.videoSource = static_cast<qsc::VideoSource>(ui->videoSourceBox->currentIndex());
-    params.cameraFacing = static_cast<qsc::CameraFacing>(ui->cameraFacingBox->currentIndex());
+    params.cameraFacing = ui->cameraFacingBox->currentIndex() == 1
+            ? qsc::CAMERA_FACING_FRONT
+            : qsc::CAMERA_FACING_BACK;
+    params.cameraId = ui->cameraFacingBox->currentData().toString();
     const bool camera = params.videoSource == qsc::VIDEO_SOURCE_CAMERA;
     params.closeScreen = !camera && ui->closeScreenCheck->isChecked();
     params.useReverse = ui->useReverseCheck->isChecked();
@@ -448,6 +453,83 @@ void Dialog::on_startServerBtn_clicked()
         }
     });
     versionAdb->execute(params.serial, QStringList() << "shell" << "getprop" << "ro.build.version.sdk");
+}
+
+void Dialog::on_refreshCameraBtn_clicked()
+{
+    const QString serial = ui->serialBox->currentText().trimmed();
+    if (serial.isEmpty()) {
+        outLog(tr("no device"));
+        return;
+    }
+    if (qsc::IDeviceManage::getInstance().getDevice(serial)) {
+        outLog(tr("stop preview first"));
+        return;
+    }
+
+    ui->refreshCameraBtn->setEnabled(false);
+    ui->refreshCameraBtn->setText("...");
+
+    auto *pushAdb = new qsc::AdbProcess(this);
+    connect(pushAdb, &qsc::AdbProcess::adbProcessResult, this,
+            [this, pushAdb, serial](qsc::AdbProcess::ADB_EXEC_RESULT result) {
+        if (result == qsc::AdbProcess::AER_SUCCESS_EXEC) {
+            pushAdb->deleteLater();
+
+            auto *listAdb = new qsc::AdbProcess(this);
+            connect(listAdb, &qsc::AdbProcess::adbProcessResult, this,
+                    [this, listAdb](qsc::AdbProcess::ADB_EXEC_RESULT listResult) {
+                if (listResult == qsc::AdbProcess::AER_SUCCESS_START) {
+                    return;
+                }
+                ui->refreshCameraBtn->setText(tr("refresh"));
+                ui->refreshCameraBtn->setEnabled(ui->videoSourceBox->currentIndex() == qsc::VIDEO_SOURCE_CAMERA);
+
+                if (listResult != qsc::AdbProcess::AER_SUCCESS_EXEC) {
+                    outLog(tr("camera refresh failed"));
+                    listAdb->deleteLater();
+                    return;
+                }
+
+                const QString output = listAdb->getStdOut() + '\n' + listAdb->getErrorOut();
+                const QRegularExpression pattern(R"(--camera-id=(\S+)\s+\(([^,\)]+))");
+                QRegularExpressionMatchIterator matches = pattern.globalMatch(output);
+
+                const int facingIndex = ui->cameraFacingBox->currentIndex();
+                ui->cameraFacingBox->clear();
+                ui->cameraFacingBox->addItem(tr("back"));
+                ui->cameraFacingBox->addItem(tr("front"));
+
+                int cameraCount = 0;
+                while (matches.hasNext()) {
+                    const QRegularExpressionMatch match = matches.next();
+                    const QString cameraId = match.captured(1);
+                    const QString facing = match.captured(2).trimmed();
+                    ui->cameraFacingBox->addItem(QString("%1 (%2)").arg(cameraId, facing), cameraId);
+                    ++cameraCount;
+                }
+
+                ui->cameraFacingBox->setCurrentIndex(qMin(facingIndex, ui->cameraFacingBox->count() - 1));
+                outLog(cameraCount ? tr("camera refreshed") : tr("no camera"));
+                listAdb->deleteLater();
+            });
+
+            QStringList args;
+            args << "shell";
+            args << QString("CLASSPATH=%1").arg(Config::getInstance().getServerPath());
+            args << "app_process" << "/" << "com.genymobile.scrcpy.Server" << "4.1";
+            args << "list_cameras=true" << "log_level=info";
+            listAdb->execute(serial, args);
+        } else if (result == qsc::AdbProcess::AER_ERROR_EXEC
+                   || result == qsc::AdbProcess::AER_ERROR_START
+                   || result == qsc::AdbProcess::AER_ERROR_MISSING_BINARY) {
+            ui->refreshCameraBtn->setText(tr("refresh"));
+            ui->refreshCameraBtn->setEnabled(ui->videoSourceBox->currentIndex() == qsc::VIDEO_SOURCE_CAMERA);
+            outLog(tr("camera refresh failed"));
+            pushAdb->deleteLater();
+        }
+    });
+    pushAdb->push(serial, getServerPath(), Config::getInstance().getServerPath());
 }
 
 void Dialog::on_stopServerBtn_clicked()

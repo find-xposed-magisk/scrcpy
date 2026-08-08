@@ -45,6 +45,9 @@ private slots:
     void on_closeScreenBtn_clicked();
     void on_expandNotifyBtn_clicked();
     void on_touchBtn_clicked();
+    void on_cameraTorchBtn_clicked();
+    void on_cameraZoomOutBtn_clicked();
+    void on_cameraZoomInBtn_clicked();
     void on_groupControlBtn_clicked();
     void on_openScreenBtn_clicked();
     void on_clipboardBtn_clicked();
@@ -59,6 +62,7 @@ private:
     QPoint m_dragPosition;
     QString m_serial;
     bool m_showTouch = false;
+    bool m_cameraTorch = false;
     bool m_isHost = false;
 };
 
