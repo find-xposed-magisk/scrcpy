@@ -163,6 +163,22 @@
         <source>no camera</source>
         <translation>没有相机</translation>
     </message>
+    <message>
+        <source>stop server first</source>
+        <translation>请先停止服务</translation>
+    </message>
+    <message>
+        <source>app refresh failed</source>
+        <translation>应用列表刷新失败</translation>
+    </message>
+    <message>
+        <source>apps refreshed</source>
+        <translation>应用列表已刷新</translation>
+    </message>
+    <message>
+        <source>no launchable app</source>
+        <translation>没有可启动的应用</translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>

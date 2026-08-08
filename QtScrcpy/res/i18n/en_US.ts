@@ -163,6 +163,22 @@
         <source>no camera</source>
         <translation>no camera</translation>
     </message>
+    <message>
+        <source>stop server first</source>
+        <translation>stop server first</translation>
+    </message>
+    <message>
+        <source>app refresh failed</source>
+        <translation>app refresh failed</translation>
+    </message>
+    <message>
+        <source>apps refreshed</source>
+        <translation>apps refreshed</translation>
+    </message>
+    <message>
+        <source>no launchable app</source>
+        <translation>no launchable app</translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>

@@ -163,6 +163,22 @@
         <source>no camera</source>
         <translation>カメラがありません</translation>
     </message>
+    <message>
+        <source>stop server first</source>
+        <translation>先にサーバーを停止してください</translation>
+    </message>
+    <message>
+        <source>app refresh failed</source>
+        <translation>アプリ一覧の更新に失敗しました</translation>
+    </message>
+    <message>
+        <source>apps refreshed</source>
+        <translation>アプリ一覧を更新しました</translation>
+    </message>
+    <message>
+        <source>no launchable app</source>
+        <translation>起動可能なアプリはありません</translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
