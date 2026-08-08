@@ -43,6 +43,126 @@
         <source>Clear History</source>
         <translation>履歴を消去</translation>
     </message>
+    <message>
+        <source>display</source>
+        <translation>ディスプレイ</translation>
+    </message>
+    <message>
+        <source>camera</source>
+        <translation>カメラ</translation>
+    </message>
+    <message>
+        <source>back</source>
+        <translation>背面</translation>
+    </message>
+    <message>
+        <source>front</source>
+        <translation>前面</translation>
+    </message>
+    <message>
+        <source>Advanced display</source>
+        <translation>詳細表示設定</translation>
+    </message>
+    <message>
+        <source>Primary display</source>
+        <translation>メインディスプレイ</translation>
+    </message>
+    <message>
+        <source>Existing display ID</source>
+        <translation>既存ディスプレイ ID</translation>
+    </message>
+    <message>
+        <source>New virtual display</source>
+        <translation>新しい仮想ディスプレイ</translation>
+    </message>
+    <message>
+        <source>Display mode</source>
+        <translation>表示モード</translation>
+    </message>
+    <message>
+        <source>Display ID</source>
+        <translation>ディスプレイ ID</translation>
+    </message>
+    <message>
+        <source>Virtual size / DPI</source>
+        <translation>仮想サイズ / DPI</translation>
+    </message>
+    <message>
+        <source>Crop</source>
+        <translation>切り抜き</translation>
+    </message>
+    <message>
+        <source>Resize virtual display with window</source>
+        <translation>ウィンドウに合わせて仮想ディスプレイをリサイズ</translation>
+    </message>
+    <message>
+        <source>Server default</source>
+        <translation>サーバーの既定値</translation>
+    </message>
+    <message>
+        <source>IME policy</source>
+        <translation>IME ポリシー</translation>
+    </message>
+    <message>
+        <source>Show system decorations</source>
+        <translation>システム装飾を表示</translation>
+    </message>
+    <message>
+        <source>Destroy content on close</source>
+        <translation>閉じるときにコンテンツを破棄</translation>
+    </message>
+    <message>
+        <source>Keep device active</source>
+        <translation>デバイスをアクティブに維持</translation>
+    </message>
+    <message>
+        <source>Start app</source>
+        <translation>アプリを起動</translation>
+    </message>
+    <message>
+        <source>invalid display ID</source>
+        <translation>無効なディスプレイ ID</translation>
+    </message>
+    <message>
+        <source>flex display requires video, a new virtual display, and no crop</source>
+        <translation>フレックスディスプレイには、動画、新しい仮想ディスプレイ、切り抜きなしが必要です</translation>
+    </message>
+    <message>
+        <source>camera preview requires Android 12 or later</source>
+        <translation>カメラプレビューには Android 12 以降が必要です</translation>
+    </message>
+    <message>
+        <source>virtual display requires Android 10 or later</source>
+        <translation>仮想ディスプレイには Android 10 以降が必要です</translation>
+    </message>
+    <message>
+        <source>could not verify Android version for camera preview</source>
+        <translation>カメラプレビューの Android バージョンを確認できませんでした</translation>
+    </message>
+    <message>
+        <source>no device</source>
+        <translation>デバイスがありません</translation>
+    </message>
+    <message>
+        <source>stop preview first</source>
+        <translation>先にプレビューを停止してください</translation>
+    </message>
+    <message>
+        <source>refresh</source>
+        <translation>更新</translation>
+    </message>
+    <message>
+        <source>camera refresh failed</source>
+        <translation>カメラの更新に失敗しました</translation>
+    </message>
+    <message>
+        <source>camera refreshed</source>
+        <translation>カメラを更新しました</translation>
+    </message>
+    <message>
+        <source>no camera</source>
+        <translation>カメラがありません</translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -68,11 +188,11 @@
     </message>
     <message>
         <source>If you need more professional PC remote software, you can try the following software:</source>
-        <translation type="unfinished"></translation>
+        <translation>より高度な PC リモートソフトウェアが必要な場合は、次のソフトウェアをお試しください:</translation>
     </message>
     <message>
         <source>QuickDesk</source>
-        <translation type="unfinished"></translation>
+        <translation>QuickDesk</translation>
     </message>
     <message>
         <source>You can contact me with telegram &lt;https://t.me/+Ylf_5V_rDCMyODQ1&gt;</source>
@@ -86,48 +206,8 @@
         <translation>ツール</translation>
     </message>
     <message>
-        <source>full screen</source>
-        <translation>フルスクリーン</translation>
-    </message>
-    <message>
-        <source>expand notify</source>
-        <translation>通知を展開</translation>
-    </message>
-    <message>
         <source>touch switch</source>
         <translation>タッチ切り替え</translation>
-    </message>
-    <message>
-        <source>close screen</source>
-        <translation>画面を閉じる</translation>
-    </message>
-    <message>
-        <source>power</source>
-        <translation>電源</translation>
-    </message>
-    <message>
-        <source>volume up</source>
-        <translation>音量を上げる</translation>
-    </message>
-    <message>
-        <source>volume down</source>
-        <translation>音量を下げる</translation>
-    </message>
-    <message>
-        <source>app switch</source>
-        <translation>アプリを切り替え</translation>
-    </message>
-    <message>
-        <source>menu</source>
-        <translation>メニュー</translation>
-    </message>
-    <message>
-        <source>home</source>
-        <translation>ホーム</translation>
-    </message>
-    <message>
-        <source>return</source>
-        <translation>戻る</translation>
     </message>
     <message>
         <source>screen shot</source>
@@ -135,7 +215,7 @@
     </message>
     <message>
         <source>copy clipboard text</source>
-        <translation type="unfinished"></translation>
+        <translation>デバイスのクリップボードテキストをコピー</translation>
     </message>
     <message>
         <source>open screen</source>
@@ -146,8 +226,64 @@
         <translation>グループコントロール</translation>
     </message>
     <message>
-        <source>edit keymap</source>
-        <translation type="unfinished"></translation>
+        <source>full screen (Ctrl+F)</source>
+        <translation>全画面表示（Ctrl+F）</translation>
+    </message>
+    <message>
+        <source>expand notify (Ctrl+N)</source>
+        <translation>通知パネルを開く（Ctrl+N）</translation>
+    </message>
+    <message>
+        <source>expand settings panel (Ctrl+Alt+N)</source>
+        <translation>設定パネルを開く（Ctrl+Alt+N）</translation>
+    </message>
+    <message>
+        <source>rotate device (Ctrl+R)</source>
+        <translation>デバイスを回転（Ctrl+R）</translation>
+    </message>
+    <message>
+        <source>close screen (Ctrl+O)</source>
+        <translation>画面をオフ（Ctrl+O）</translation>
+    </message>
+    <message>
+        <source>power (Ctrl+P)</source>
+        <translation>電源（Ctrl+P）</translation>
+    </message>
+    <message>
+        <source>volume up (Ctrl+Up)</source>
+        <translation>音量を上げる（Ctrl+↑）</translation>
+    </message>
+    <message>
+        <source>volume down (Ctrl+Down)</source>
+        <translation>音量を下げる（Ctrl+↓）</translation>
+    </message>
+    <message>
+        <source>app switch (Ctrl+S)</source>
+        <translation>アプリ切替（Ctrl+S）</translation>
+    </message>
+    <message>
+        <source>menu (Ctrl+M)</source>
+        <translation>メニュー（Ctrl+M）</translation>
+    </message>
+    <message>
+        <source>home (Ctrl+H)</source>
+        <translation>ホーム（Ctrl+H）</translation>
+    </message>
+    <message>
+        <source>return (Ctrl+B)</source>
+        <translation>戻る（Ctrl+B）</translation>
+    </message>
+    <message>
+        <source>torch</source>
+        <translation>ライト</translation>
+    </message>
+    <message>
+        <source>zoom out</source>
+        <translation>縮小</translation>
+    </message>
+    <message>
+        <source>zoom in</source>
+        <translation>拡大</translation>
     </message>
 </context>
 <context>
@@ -350,28 +486,16 @@
         <translation>録画の保存先:</translation>
     </message>
     <message>
-        <source>Codec Mode:</source>
-        <translation type="unfinished"></translation>
+        <source>video source:</source>
+        <translation>動画ソース：</translation>
     </message>
     <message>
-        <source>Default (Auto)</source>
-        <translation type="unfinished"></translation>
+        <source>camera:</source>
+        <translation>カメラ：</translation>
     </message>
     <message>
-        <source>MTK Encoder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Encoder selection: Default uses system auto-select; MTK enables fine-grained tuning. For MediaTek devices only.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open MTK encoder advanced settings: optimization levels, reset, auto-reset, etc. For MediaTek devices only.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Encoder Settings...</source>
-        <translation type="unfinished"></translation>
+        <source>refresh</source>
+        <translation>更新</translation>
     </message>
 </context>
 </TS>

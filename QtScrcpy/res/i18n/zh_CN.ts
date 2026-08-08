@@ -43,6 +43,126 @@
         <source>Clear History</source>
         <translation>清理历史</translation>
     </message>
+    <message>
+        <source>display</source>
+        <translation>显示屏</translation>
+    </message>
+    <message>
+        <source>camera</source>
+        <translation>相机</translation>
+    </message>
+    <message>
+        <source>back</source>
+        <translation>后置</translation>
+    </message>
+    <message>
+        <source>front</source>
+        <translation>前置</translation>
+    </message>
+    <message>
+        <source>Advanced display</source>
+        <translation>高级显示</translation>
+    </message>
+    <message>
+        <source>Primary display</source>
+        <translation>主显示屏</translation>
+    </message>
+    <message>
+        <source>Existing display ID</source>
+        <translation>已有显示屏 ID</translation>
+    </message>
+    <message>
+        <source>New virtual display</source>
+        <translation>新建虚拟显示屏</translation>
+    </message>
+    <message>
+        <source>Display mode</source>
+        <translation>显示模式</translation>
+    </message>
+    <message>
+        <source>Display ID</source>
+        <translation>显示屏 ID</translation>
+    </message>
+    <message>
+        <source>Virtual size / DPI</source>
+        <translation>虚拟尺寸 / DPI</translation>
+    </message>
+    <message>
+        <source>Crop</source>
+        <translation>裁剪</translation>
+    </message>
+    <message>
+        <source>Resize virtual display with window</source>
+        <translation>随窗口调整虚拟显示屏尺寸</translation>
+    </message>
+    <message>
+        <source>Server default</source>
+        <translation>服务端默认</translation>
+    </message>
+    <message>
+        <source>IME policy</source>
+        <translation>输入法策略</translation>
+    </message>
+    <message>
+        <source>Show system decorations</source>
+        <translation>显示系统装饰</translation>
+    </message>
+    <message>
+        <source>Destroy content on close</source>
+        <translation>关闭时销毁内容</translation>
+    </message>
+    <message>
+        <source>Keep device active</source>
+        <translation>保持设备活跃</translation>
+    </message>
+    <message>
+        <source>Start app</source>
+        <translation>启动应用</translation>
+    </message>
+    <message>
+        <source>invalid display ID</source>
+        <translation>显示屏 ID 无效</translation>
+    </message>
+    <message>
+        <source>flex display requires video, a new virtual display, and no crop</source>
+        <translation>弹性显示要求开启视频、创建新的虚拟显示屏且不使用裁剪</translation>
+    </message>
+    <message>
+        <source>camera preview requires Android 12 or later</source>
+        <translation>相机预览需要 Android 12 或更高版本</translation>
+    </message>
+    <message>
+        <source>virtual display requires Android 10 or later</source>
+        <translation>虚拟显示屏需要 Android 10 或更高版本</translation>
+    </message>
+    <message>
+        <source>could not verify Android version for camera preview</source>
+        <translation>无法验证相机预览所需的 Android 版本</translation>
+    </message>
+    <message>
+        <source>no device</source>
+        <translation>没有设备</translation>
+    </message>
+    <message>
+        <source>stop preview first</source>
+        <translation>请先停止预览</translation>
+    </message>
+    <message>
+        <source>refresh</source>
+        <translation>刷新</translation>
+    </message>
+    <message>
+        <source>camera refresh failed</source>
+        <translation>相机刷新失败</translation>
+    </message>
+    <message>
+        <source>camera refreshed</source>
+        <translation>相机已刷新</translation>
+    </message>
+    <message>
+        <source>no camera</source>
+        <translation>没有相机</translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -68,11 +188,11 @@
     </message>
     <message>
         <source>If you need more professional PC remote software, you can try the following software:</source>
-        <translation></translation>
+        <translation>如果你需要更专业的 PC 远程软件，你可以尝试下面软件：</translation>
     </message>
     <message>
         <source>QuickDesk</source>
-        <translation></translation>
+        <translation>QuickDesk</translation>
     </message>
     <message>
         <source>You can contact me with telegram &lt;https://t.me/+Ylf_5V_rDCMyODQ1&gt;</source>
@@ -86,48 +206,8 @@
         <translation>工具</translation>
     </message>
     <message>
-        <source>full screen</source>
-        <translation>全屏</translation>
-    </message>
-    <message>
-        <source>expand notify</source>
-        <translation>下拉通知</translation>
-    </message>
-    <message>
         <source>touch switch</source>
         <translation>触摸显示开关</translation>
-    </message>
-    <message>
-        <source>close screen</source>
-        <translation>关闭屏幕</translation>
-    </message>
-    <message>
-        <source>power</source>
-        <translation>电源</translation>
-    </message>
-    <message>
-        <source>volume up</source>
-        <translation>音量加</translation>
-    </message>
-    <message>
-        <source>volume down</source>
-        <translation>音量减</translation>
-    </message>
-    <message>
-        <source>app switch</source>
-        <translation>切换应用</translation>
-    </message>
-    <message>
-        <source>menu</source>
-        <translation>菜单</translation>
-    </message>
-    <message>
-        <source>home</source>
-        <translation>主界面</translation>
-    </message>
-    <message>
-        <source>return</source>
-        <translation>返回</translation>
     </message>
     <message>
         <source>screen shot</source>
@@ -135,7 +215,7 @@
     </message>
     <message>
         <source>copy clipboard text</source>
-        <translation></translation>
+        <translation>复制设备剪贴板文本</translation>
     </message>
     <message>
         <source>open screen</source>
@@ -146,8 +226,64 @@
         <translation>群控</translation>
     </message>
     <message>
-        <source>edit keymap</source>
-        <translation></translation>
+        <source>full screen (Ctrl+F)</source>
+        <translation>全屏（Ctrl+F）</translation>
+    </message>
+    <message>
+        <source>expand notify (Ctrl+N)</source>
+        <translation>展开通知栏（Ctrl+N）</translation>
+    </message>
+    <message>
+        <source>expand settings panel (Ctrl+Alt+N)</source>
+        <translation>展开设置面板（Ctrl+Alt+N）</translation>
+    </message>
+    <message>
+        <source>rotate device (Ctrl+R)</source>
+        <translation>旋转设备（Ctrl+R）</translation>
+    </message>
+    <message>
+        <source>close screen (Ctrl+O)</source>
+        <translation>关闭屏幕（Ctrl+O）</translation>
+    </message>
+    <message>
+        <source>power (Ctrl+P)</source>
+        <translation>电源（Ctrl+P）</translation>
+    </message>
+    <message>
+        <source>volume up (Ctrl+Up)</source>
+        <translation>音量增加（Ctrl+上）</translation>
+    </message>
+    <message>
+        <source>volume down (Ctrl+Down)</source>
+        <translation>音量降低（Ctrl+下）</translation>
+    </message>
+    <message>
+        <source>app switch (Ctrl+S)</source>
+        <translation>最近任务（Ctrl+S）</translation>
+    </message>
+    <message>
+        <source>menu (Ctrl+M)</source>
+        <translation>菜单（Ctrl+M）</translation>
+    </message>
+    <message>
+        <source>home (Ctrl+H)</source>
+        <translation>主页（Ctrl+H）</translation>
+    </message>
+    <message>
+        <source>return (Ctrl+B)</source>
+        <translation>返回（Ctrl+B）</translation>
+    </message>
+    <message>
+        <source>torch</source>
+        <translation>手电筒</translation>
+    </message>
+    <message>
+        <source>zoom out</source>
+        <translation>缩小</translation>
+    </message>
+    <message>
+        <source>zoom in</source>
+        <translation>放大</translation>
     </message>
 </context>
 <context>
@@ -350,28 +486,16 @@
         <translation>录像保存路径</translation>
     </message>
     <message>
-        <source>Codec Mode:</source>
-        <translation></translation>
+        <source>video source:</source>
+        <translation>视频源：</translation>
     </message>
     <message>
-        <source>Default (Auto)</source>
-        <translation></translation>
+        <source>camera:</source>
+        <translation>相机：</translation>
     </message>
     <message>
-        <source>MTK Encoder</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Encoder selection: Default uses system auto-select; MTK enables fine-grained tuning. For MediaTek devices only.</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Open MTK encoder advanced settings: optimization levels, reset, auto-reset, etc. For MediaTek devices only.</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Encoder Settings...</source>
-        <translation></translation>
+        <source>refresh</source>
+        <translation>刷新</translation>
     </message>
 </context>
 </TS>
