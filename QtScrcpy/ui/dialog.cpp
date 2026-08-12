@@ -16,6 +16,7 @@
 #include <QSizePolicy>
 #include <QScreen>
 #include <QStyledItemDelegate>
+#include <QTabWidget>
 #include <QTime>
 #include <QTimer>
 #include <QVBoxLayout>
@@ -253,21 +254,61 @@ void Dialog::initUI()
     }
     initAdvancedDisplayUi();
 
+    auto *configTabs = new QTabWidget(ui->rightWidget);
+    auto *startConfigPage = new QWidget(configTabs);
+    auto *advancedDisplayPage = new QWidget(configTabs);
+    auto *startConfigLayout = new QVBoxLayout(startConfigPage);
+    auto *advancedDisplayLayout = new QVBoxLayout(advancedDisplayPage);
+    startConfigLayout->setContentsMargins(0, 0, 0, 0);
+    advancedDisplayLayout->setContentsMargins(0, 0, 0, 0);
+
+    ui->verticalLayout_5->removeWidget(ui->adbGroupBox);
+    ui->verticalLayout_5->removeWidget(ui->outEdit);
+    ui->verticalLayout_6->removeWidget(ui->configGroupBox);
+    ui->verticalLayout_6->removeWidget(ui->usbGroupBox);
+    ui->verticalLayout_6->removeWidget(ui->wirelessGroupBox);
+    ui->verticalLayout_6->removeWidget(m_advancedDisplayGroup);
+    delete ui->verticalLayout_6->takeAt(0);
+
+    ui->verticalLayout_5->addWidget(ui->usbGroupBox);
+    ui->verticalLayout_5->addWidget(ui->wirelessGroupBox);
+    startConfigLayout->addWidget(ui->configGroupBox);
+    startConfigLayout->addStretch();
+    advancedDisplayLayout->addWidget(m_advancedDisplayGroup);
+    advancedDisplayLayout->addStretch();
+    configTabs->addTab(startConfigPage, tr("Start Config"));
+    configTabs->addTab(advancedDisplayPage, tr("Advanced Display"));
+    configTabs->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
+    ui->verticalLayout_6->addWidget(configTabs);
+    ui->verticalLayout_6->addWidget(ui->adbGroupBox);
+    ui->verticalLayout_6->addWidget(ui->outEdit);
+
+    ui->leftWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+    ui->leftWidget->setMinimumWidth(0);
+    ui->horizontalLayout_11->setStretch(0, 1);
+    ui->horizontalLayout_11->setStretch(1, 2);
+    ui->horizontalLayout->setStretch(0, 1);
+    ui->horizontalLayout->setStretch(2, 0);
+
     for (QComboBox *comboBox : findChildren<QComboBox *>()) {
         comboBox->view()->setItemDelegate(new ComboBoxItemDelegate(comboBox->view()));
     }
 
     QSizePolicy simpleModePolicy = ui->simpleGroupBox->sizePolicy();
-    simpleModePolicy.setVerticalPolicy(QSizePolicy::Maximum);
+    simpleModePolicy.setVerticalPolicy(QSizePolicy::Expanding);
     ui->simpleGroupBox->setSizePolicy(simpleModePolicy);
 
     QSizePolicy logPolicy = ui->outEdit->sizePolicy();
     logPolicy.setVerticalPolicy(QSizePolicy::Expanding);
     ui->outEdit->setSizePolicy(logPolicy);
     ui->verticalLayout_5->setStretch(0, 0);
-    ui->verticalLayout_5->setStretch(1, 0);
+    ui->verticalLayout_5->setStretch(1, 1);
     ui->verticalLayout_5->setStretch(2, 0);
-    ui->verticalLayout_5->setStretch(3, 1);
+    ui->verticalLayout_5->setStretch(3, 0);
+    ui->verticalLayout_4->setStretch(2, 1);
+    ui->verticalLayout_6->setStretch(0, 0);
+    ui->verticalLayout_6->setStretch(1, 0);
+    ui->verticalLayout_6->setStretch(2, 1);
 }
 
 void Dialog::initAdvancedDisplayUi()
@@ -326,9 +367,6 @@ void Dialog::initAdvancedDisplayUi()
     startAppLayout->addWidget(m_refreshAppsBtn);
     layout->addRow(tr("Start app"), startAppWidget);
 
-    // Keep infrequently used display parameters out of the primary start
-    // configuration, immediately above the expanding spacer on the right.
-    ui->verticalLayout_6->insertWidget(ui->verticalLayout_6->count() - 1, m_advancedDisplayGroup);
     connect(m_displayModeBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &Dialog::updateAdvancedDisplayUi);
     connect(m_flexDisplayCheck, &QCheckBox::toggled, this, &Dialog::updateAdvancedDisplayUi);
     connect(m_refreshAppsBtn, &QPushButton::clicked, this, &Dialog::on_refreshAppsBtn_clicked);
