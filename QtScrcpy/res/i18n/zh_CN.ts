@@ -179,6 +179,14 @@
         <source>no launchable app</source>
         <translation>没有可启动的应用</translation>
     </message>
+    <message>
+        <source>Start Config</source>
+        <translation>启动配置</translation>
+    </message>
+    <message>
+        <source>Advanced Display</source>
+        <translation>高级显示</translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>

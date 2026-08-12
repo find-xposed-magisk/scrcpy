@@ -179,6 +179,14 @@
         <source>no launchable app</source>
         <translation>no launchable app</translation>
     </message>
+    <message>
+        <source>Start Config</source>
+        <translation>Start Config</translation>
+    </message>
+    <message>
+        <source>Advanced Display</source>
+        <translation>Advanced Display</translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>

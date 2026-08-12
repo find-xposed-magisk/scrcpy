@@ -179,6 +179,14 @@
         <source>no launchable app</source>
         <translation>起動可能なアプリはありません</translation>
     </message>
+    <message>
+        <source>Start Config</source>
+        <translation>起動設定</translation>
+    </message>
+    <message>
+        <source>Advanced Display</source>
+        <translation>高度な表示</translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
