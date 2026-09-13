@@ -7,6 +7,7 @@
 
 ![license](https://img.shields.io/badge/license-Apache2.0-blue.svg)
 ![release](https://img.shields.io/github/v/release/barry-ran/QtScrcpy.svg)
+![star](https://img.shields.io/github/stars/barry-ran/QtScrcpy.svg)
 
 [中文用户？点我查看中文介绍](README_zh.md)
 
@@ -31,14 +32,30 @@ It focuses on:
 
 ![linux](screenshot/linux-en.png)
 
+## The author has developed a more professional screen casting software called `QuickMirror`
+QuickMirror function&features:
+- Equipment screen casting&control: batch screen casting, individual control, batch control
+- Group management
+- WiFi screen mirroring/OTG screen mirroring
+- Adb shell shortcut command
+- File transfer, apk installation
+- Multiple screen mirroring: In OTG mirroring mode, with low resolution and smoothness settings, a single computer can manage 500+phones simultaneously
+- Low latency: USB screen mirroring 1080p latency is within 30ms, which is lower than all screen mirroring software on the market in terms of latency at the same resolution and smoothness
+- Low CPU usage: pure C++development, high-performance GPU video rendering
+- High resolution: adjustable, maximum support for native resolution of Android terminals
+- Perfect Chinese input: Supports Xianyu app, supports Samsung phones
+- The free version can cast up to 10 screens, with unlimited functionality (except for automatic screen mirroring)
+- QuickMirror tutorial: https://lrbnfell4p.feishu.cn/docx/EMkvdfIvDowy3UxsXUCcpPV8nDh
+- QuickMirror Telegram communication group: https://t.me/+EnQNmb47C_liYmRl
+- Preview of QuickMirror Interface:
+![quickmirror](docs/image/quickmirror.png)
+
 ## Mapping Keys
 You can write your script to map keyboard and mouse actions to touches and clicks of the mobile phone according to your needs. [Here](docs/KeyMapDes.md) are the script writing rules.
 
 Script for TikTok and some other games are provided by default. Once enabled, you can play the game with your keyboard and mouse. The default key mapping for PUBG Mobile is as follows:
 
-![game](screenshot/game.jpg)
-
-[Here is a video demonstration playing PUBG Mobile.](http://mp.weixin.qq.com/mp/video?__biz=MzU1NTg5MjYyNw==&mid=100000015&sn=3e301fdc5a364bd16d6207fa674bc8b3&vid=wxv_968792362971430913)
+![game](screenshot/game.png)
 
 Instruction for adding new customized mapping files.
 
@@ -50,10 +67,30 @@ Instruction for adding new customized mapping files.
 - Press the ~ key again to switch back to normal mode
 - (For games such as PUBG Mobile) If you want to move vehicles with the STEER_WHEEL keys, you need to set the move mode to `single rocker mode`.
 
+If you don't know how to manually write mapping rules, you can also use the `QuickAssistant` developed by the author
+QuickAssistant Features&Functions:
+- Play Android mobile games smoothly through keyboard and mouse
+- Interface based editing of key mapping script
+- Support pausing the computer screen and using only keyboard and mouse operations
+- Screenshot&Recording of Mobile Screen
+- Simple batch control
+- Android 11+supports playing mobile audio on computers (under development...)
+- Mobile app installation free
+- Fast and instant connection
+- Low latency: USB screen mirroring 1080p latency is within 30ms, which is lower than all screen mirroring software on the market in terms of latency at the same resolution and smoothness
+- Low CPU usage: pure C++development, high-performance GPU video rendering
+- High resolution: adjustable, maximum support for native resolution of Android terminals
+- Telegram Group：https://t.me/+Ylf_5V_rDCMyODQ1
+- [QuickAssistant](https://lrbnfell4p.feishu.cn/drive/folder/Hqckfxj5el1Wjpd9uezcX71lnBh)
+
 ## Group control
 You can control all your phones at the same time.
 
 ![group-control-demo](docs/image/group-control.gif)
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=barry-ran/QtScrcpy&type=Date)](https://star-history.com/#barry-ran/QtScrcpy&Date)
 
 ## Thanks
 
@@ -85,9 +122,9 @@ It details the development architecture and the development process of the entir
 
 Course introduction：[https://blog.csdn.net/rankun1/article/details/87970523](https://blog.csdn.net/rankun1/article/details/87970523)
 
-You can join my QQ group for QtScrcpy and exchange ideas with like-minded friends.：
+You can join Telegram Group for QtScrcpy and exchange ideas with like-minded friends.：
 
-QQ Group number：901736468
+Telegram Group：https://t.me/+EnQNmb47C_liYmRl
 
 
 ## Requirements
@@ -124,7 +161,7 @@ For users in other distros, you can use the prebuilt archives from Releases:
 
 - [`QtScrcpy`][github-download]
 
-or you can get it at [GitHub Actions](https://github.com/UjhhgtgTeams/QtScrcpy/actions/workflows/ubuntu.yml), in branch `dev` and download the latest artifact.
+or you can get it at [GitHub Actions](https://github.com/barry-ran/QtScrcpy/actions/workflows/ubuntu.yml), in branch `dev` and download the latest artifact.
 
 or you can [build it yourself](#Build) (not recommended, get it in Actions if you can)
 
